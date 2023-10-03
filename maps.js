@@ -1,9 +1,9 @@
 // import { google } from 'googleapis';
 // const sheets = google.sheets('v4');
 
-const sheetId = '1VPIMwk3TmPQxFLeuqysH1GPzaiUv4LAQJ6EndcOoklQ';
+// const sheetId = '1VPIMwk3TmPQxFLeuqysH1GPzaiUv4LAQJ6EndcOoklQ';
 // const range = 'Sheet1!A1:D10';
-const range = 'Sheet1';
+// const range = 'Sheet1';
 
 let map;
 
@@ -38,6 +38,36 @@ async function initMap() {
     //     position: pos,
     //     title: "Tanner",
     // });
+    fetch('Track-Data.csv')
+        .then(res => res.text())
+        .then(data => {
+            let rows = data.split('\n'); // Splits each row into its own element
+            let coordinates = []; // Holds list of all coordinates
+            let parsedData = []; // An array containing an array of each entry as elements
+
+
+            // Loops through each row and splits each entry into a separate element in an array
+            for (let i = 0; i < rows.length; i++) {
+                let columns = rows[i].match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g);
+                // columns = rows[i].split(',');
+                for (let j = 0; j < columns.length; j++) {
+                    columns[j] = columns[j].replace(/^"|"$/g, ''); // Cleanses each entry of any hanging " or / chars
+                }
+                parsedData.push(columns) // Pushes the split row into a new array
+                // parsedData.slice(1);
+            }
+
+            console.log("\Parsed Data\n", parsedData);
+
+            
+            for(let i = 0; i < parsedData.length; i++) {
+                coordinates.push(parsedData[i][5]);
+            }
+            console.log("Coordinates\n", coordinates)
+
+            // console.log("\nRows\n", rows);
+        })
+        .catch(err => console.error(err));
 
     let infowindow = new google.maps.InfoWindow({});
     let marker, count;
