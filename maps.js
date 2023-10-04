@@ -41,20 +41,23 @@ async function initMap() {
     fetch('Track-Data.csv')
         .then(res => res.text())
         .then(data => {
+            // Lists that are correct so far
             let rows = data.split('\n'); // Splits each row into its own element
-            let coordinates = []; // Holds list of all coordinates
             let parsedData = []; // An array containing an array of each entry as elements
+
+            // Lists to fix
+            let coordinates = []; // Holds list of all coordinates
+
 
 
             // Loops through each row and splits each entry into a separate element in an array
             for (let i = 0; i < rows.length; i++) {
-                let columns = rows[i].match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g);
-                // columns = rows[i].split(',');
+                // let columns = rows[i].match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g);
+                columns = rows[i].split(',');
                 for (let j = 0; j < columns.length; j++) {
-                    columns[j] = columns[j].replace(/^"|"$/g, ''); // Cleanses each entry of any hanging " or / chars
+                    columns[j] = columns[j].replace(/^"|"$/g, '').replace(/&/g, ' ') // Cleanses each entry of any hanging " or / chars
                 }
                 parsedData.push(columns) // Pushes the split row into a new array
-                // parsedData.slice(1);
             }
 
             console.log("\Parsed Data\n", parsedData);
