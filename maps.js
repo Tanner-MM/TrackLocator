@@ -38,39 +38,38 @@ async function initMap() {
     //     position: pos,
     //     title: "Tanner",
     // });
+
     fetch('Track-Data.csv')
         .then(res => res.text())
         .then(data => {
-            // Lists that are correct so far
-            let rows = data.split('\n'); // Splits each row into its own element
-            let parsedData = []; // An array containing an array of each entry as elements
-
-            // Lists to fix
+            // Lists that are correct
+            let rows = data.split('\n').map(row => row.trim()).filter(row => row.length); // Splits each row into its own element
+            let parsedData = rows.slice(1).map(row => {
+                const columns = row.split(',');
+                return columns.map(column => 
+                    column.replace(/^"|"$/g, '').replace(/&/g, ' ').replace(/%/g, ',')
+                );
+            });
             let coordinates = []; // Holds list of all coordinates
 
-
-
-            // Loops through each row and splits each entry into a separate element in an array
-            for (let i = 0; i < rows.length; i++) {
-                // let columns = rows[i].match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g);
-                columns = rows[i].split(',');
-                for (let j = 0; j < columns.length; j++) {
-                    columns[j] = columns[j].replace(/^"|"$/g, '').replace(/&/g, ' ') // Cleanses each entry of any hanging " or / chars
-                }
-                parsedData.push(columns) // Pushes the split row into a new array
-            }
-
-            console.log("\Parsed Data\n", parsedData);
-
             
-            for(let i = 0; i < parsedData.length; i++) {
-                coordinates.push(parsedData[i][5]);
-            }
-            console.log("Coordinates\n", coordinates)
 
             // console.log("\nRows\n", rows);
+
+           
+
+            // Parsing the formatted data for the coordinates and 
+            // coordinates = parsedData.map(item => [item[5], item[6]]); // Includes tracks that have 'null' for the coordinates
+            coordinates = parsedData.filter(item => item[5] !== 'null' && item[6] !== 'null').map(item => [item[5], item[6]]); // Omits tracks that do not have coordinates
+            
+            console.log("\Parsed Data\n", parsedData);
+            console.log("Coordinates\n", coordinates)
+
         })
-        .catch(err => console.error(err));
+        .catch(err => console.error(err)
+    );
+
+
 
     let infowindow = new google.maps.InfoWindow({});
     let marker, count;
