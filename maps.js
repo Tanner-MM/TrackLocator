@@ -6,18 +6,13 @@
 // const range = 'Sheet1';
 
 let map;
+// let rows; // Holds a list of each row in the csv
+let coordinates = []; // Holds a list of all coordinate pairs for each track
+let locations = [];
 
 async function initMap() {
-    const pos = { lat:  39.776326, lng: -121.8676 }; // Set coordinates for the pin, Method Marketing.
-
-    let locations = [ // Set coordinates for the pins.
-        ['Method Marketing', 39.776326, -121.8676],
-        ['CSU Chico', 39.72906900410867, -121.8486567877364],
-        ['Bidwell Park', 39.734714015310544, -121.82700290936715],
-        ['Hooker Oak Park', 39.758747, -121.796866],
-        ['Chico Nissan', 39.75876619481564, -121.84357004355181],
-        ['Pine Tree Apartments', 39.719927119726194, -121.83854688980773]
-    ];
+    // const pos = { lat:  39.776326, lng: -121.8676 }; // Set coordinates for the pin, Method Marketing.
+    const pos = { lat: 39.84181336054336, lng: -99.90822182318774 };
 
     // Request needed libraries.
     const { Map } = await google.maps.importLibrary("maps");
@@ -25,10 +20,9 @@ async function initMap() {
 
     // The map, centered at me, Tanner
     map = new Map(document.getElementById("map"), {
-        zoom: 4,
         center: pos,
         mapId: "DEMO_MAP_ID",
-        zoom: 12,
+        zoom: 5,
     });
 
     // For a single marker
@@ -39,52 +33,46 @@ async function initMap() {
     //     title: "Tanner",
     // });
 
-    fetch('Track-Data.csv')
+    await fetch('Track-Data.csv')
         .then(res => res.text())
         .then(data => {
             // Lists that are correct
-            let rows = data.split('\n').map(row => row.trim()).filter(row => row.length); // Splits each row into its own element
+            let rows = data.split('\n').map(row => row.trim()).filter(row => row.length); // Splits each row into its own element, trims whitespace, and removes any empty rows
             let parsedData = rows.slice(1).map(row => {
                 const columns = row.split(',');
                 return columns.map(column => 
                     column.replace(/^"|"$/g, '').replace(/&/g, ' ').replace(/%/g, ',')
                 );
             });
-            let coordinates = []; // Holds list of all coordinates
-
             
-
-            // console.log("\nRows\n", rows);
-
-           
-
             // Parsing the formatted data for the coordinates and 
-            // coordinates = parsedData.map(item => [item[5], item[6]]); // Includes tracks that have 'null' for the coordinates
-            coordinates = parsedData.filter(item => item[5] !== 'null' && item[6] !== 'null').map(item => [item[5], item[6]]); // Omits tracks that do not have coordinates
+            // coordinates = parsedData.map(item => [+item[5], +item[6]]); // Includes tracks that have 'null' for the coordinates and stores the values as floats
+            coordinates = parsedData.filter(item => item[5] !== 'null' && item[6] !== 'null').map(item => [+item[5], +item[6]]); // Omits tracks that do not have coordinates and stores the values as a float
+            
             
             console.log("\Parsed Data\n", parsedData);
-            console.log("Coordinates\n", coordinates)
-
+            console.log(coordinates)
         })
         .catch(err => console.error(err)
     );
-
+    
 
 
     let infowindow = new google.maps.InfoWindow({});
-    let marker, count;
-    for (count = 0; count < locations.length; count++) {
+    let marker;
+    for (let i = 0; i < coordinates.length; i++) {
         marker = new google.maps.Marker({
-            position: new google.maps.LatLng(locations[count][1], locations[count][2]),
+            // position: new google.maps.LatLng(coordinates[i][1], coordinates[i][2]),
+            position: new google.maps.LatLng(coordinates[i][0], coordinates[i][1]),
             map: map,
-            title: locations[count][0]
+            // title: locations[i][0]
         });
-        google.maps.event.addListener(marker, 'click', (function (marker, count) {
+        google.maps.event.addListener(marker, 'click', (function (marker, i) {
             return function () {
-                infowindow.setContent(locations[count][0]);
+                infowindow.setContent(locations[i][0]);
                 infowindow.open(map, marker);
             }
-        })(marker, count));
+        })(marker, i));
   }
 }
 
