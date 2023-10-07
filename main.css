@@ -1,11 +1,107 @@
-#map {
-    height: 100%;
+* {
+    margin: 0;
+    padding: 0;
 }
 
+#map {
+    flex: 0.75;
+    padding: 10px;
+
+}
 
 html,
 body {
     height: 100%;
-    margin: 0;
-    padding: 0;
 }
+
+.flex {
+    display: flex;
+}
+
+.center {
+    margin-left: auto;
+    margin-right: auto;
+} 
+
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+.container {
+    display: flex;
+    flex-direction: column;
+    width: 80%;
+    height: 80%;
+    border: 1px solid #ccc;
+    border-radius: 1%;
+}
+.search-bar {
+    padding: 10px;
+    margin: 10px;
+    border-bottom: 1px solid #ccc;
+}
+
+.filter-section {
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
+    display: flex;
+}
+
+.main-content {
+    display: flex;
+    flex: 1;
+    align-items: stretch;
+}
+.info-cards {
+    flex: 0.25;
+    overflow-y: scroll;
+    padding: 10px;
+    border-right: 1px solid #ccc;
+}
+
+.card {
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+.apply-filter {
+    
+}
+
+
+@media (max-width: 768px) {
+    .filter-section {
+        flex-direction: column;
+    }
+    
+    .filter-section > select {
+        justify-content: center; /* Center the filter options on smaller screens */
+        width: 100%; /* Take up the full width */
+    }
+
+    .filter-section button {
+        width: 100%; /* Make the button take up the full width */
+        margin-top: 10px; /* Add some margin to the top of the button */
+    }
+    .main-content {
+        flex-direction: column;
+    }
+
+    .info-cards {
+        flex: none; /* Reset the flex value */
+        border-right: none; /* Remove the right border */
+        border-bottom: 1px solid #ccc; /* Add a bottom border */
+        order: 2;
+    }
+
+    #map {
+        flex: none; /* Reset the flex value */
+        height: 100%;
+    }
+}
+
