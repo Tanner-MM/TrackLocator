@@ -1,8 +1,3 @@
-// const sheets = google.sheets('v4');
-
-// const sheetId = '1VPIMwk3TmPQxFLeuqysH1GPzaiUv4LAQJ6EndcOoklQ';
-// const range = 'Sheet1!A1:D10';
-// const range = 'Sheet1';
 
 async function initMap() {
     // const pos = { lat:  39.776326, lng: -121.8676 }; // Set coordinates for the pin, Method Marketing.
@@ -10,7 +5,7 @@ async function initMap() {
 
     // Request needed libraries.
     const { Map } = await google.maps.importLibrary("maps");
-    const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
+    // const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
 
     map = new Map(document.getElementById("map"), {
         center: pos,
@@ -38,6 +33,12 @@ async function main() {
                 ).content;
                 const shadowRoot = this.attachShadow({ mode: "open" });
                 shadowRoot.appendChild(template.cloneNode(true));
+
+                this._card = shadowRoot.querySelector('.card');
+            }
+
+            get card() {
+                return this._card;
             }
         }
     );
