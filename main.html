@@ -10,9 +10,7 @@
   <body>
 
     <div class="container">
-      <div class="search-bar">
-          <input type="text" placeholder="Search...">
-      </div>
+      
       <div class="filter-section">
           <!-- Filter options will go here -->
           <h4>Filter Options:</h4>
@@ -45,21 +43,6 @@
             <div id="track-container"></div>
               <template id="track-card">
                 <style>
-                    .btn {
-                      padding: 5px 15px;
-                      background-color: #007BFF;
-                      color: #fff;
-                      border: none;
-                      border-radius: 5px;
-                      cursor: pointer;
-                      font-size: 14px;
-                      text-align: center;
-                      text-decoration: none;
-                    }
-
-                    .card .btn:hover {
-                      background-color: #0056b3;
-                    }
                     .card {
                       border: 1px solid #ccc;
                       padding: 10px;
@@ -74,14 +57,12 @@
                       cursor: pointer;
                       background-color: #E8E8E8;
                     }
-
                     .card-title {
                       font-weight: bold;
                       font-size: 16px;
                       color: #333;
                       line-height: 30px;
                     }
-
                     .card-text {
                       font-size: 14px;
                       color: #777;
@@ -92,7 +73,11 @@
                     .mb-10 {
                       margin-bottom: 10px;
                     }
-                    
+                    .highlighted {
+                      border: 2px solid #49759fff;
+                      background-color: #E8E8E8;
+                    }
+                                        
                 </style>
 
                 <div class="card">
@@ -104,16 +89,15 @@
                       <slot name="address"></slot>
                     </div>
                     <div class="mb-3">
-                      <slot name="website"></slot>
-                    </div>
-                    <div class="mb-3">
                       <slot name="phoneNumber"></slot>                      
                     </div>
                     <div class="mb-10">
                       <slot name="email"></slot>                      
                     </div>
+                    <div class="mb-3">
+                      <slot name="website"></slot>
+                    </div>
                   </div>
-                  <a href="#" class="btn">Get Directions</a>
                 </div>
 
 
