@@ -3,7 +3,6 @@ let coordinates = []; // Holds a list of all coordinate pairs for each track
 let locations = []; // List of all track names
 let parsedData = []; // All csv data, parsed into rows and columns
 let markers = []; // All marker objects
-let tracks = [];
 
 let currentHighlightedCard = null;
 let infowindow;
@@ -20,14 +19,13 @@ async function parseCsv() {
                 );
             });
 
-            // Parsing the formatted data for the coordinates and 
             // coordinates = parsedData.map(item => [+item[5], +item[6]]); // Includes tracks that have 'null' for the coordinates and stores the values as floats
             coordinates = parsedData.filter(item => item[5] !== 'null' && item[6] !== 'null').map(item => [+item[5], +item[6]]); // Omits tracks that do not have coordinates and converts values to a float
 
             locations = parsedData.map(item => item[0]);
         })
         .catch(err => console.error(err)
-        );
+    );
 }
 
 async function placeMarkers() {
@@ -49,12 +47,17 @@ async function placeMarkers() {
     });
 }
 
-function createInfoWindows() {
+function createInfoWindows(marker, index) {
+    infowindow = new google.maps.InfoWindow({});
     
+    google.maps.event.addListener(marker, 'click', function() {
+        infowindow.setContent(locations[index]);
+        infowindow.open(map, marker);
+    });
 }
 
 function generateInfoCards() {
-    tracks = parsedData.map((row, i) => ({
+    const tracks = parsedData.map((row, i) => ({
         id: i.toString(),
         trackName: row[0],
         address: row[4],
@@ -62,10 +65,10 @@ function generateInfoCards() {
         website: row[9],
         phoneNumber: row[7],
     }));
-    generateCardsElements(); // Generates the info card elements
+    generateCardsElements(tracks); // Generates the info card elements
 }
 
-function generateCardsElements() {
+function generateCardsElements(tracks) {
     const trackContainer = document.getElementById("track-container");
     tracks.forEach(track => {
         const trackEl = document.createElement("track-card");
