@@ -55,7 +55,7 @@ body {
     display: flex;
     flex: 1;
     align-items: stretch;
-    overflow: hidden;
+    max-height: 100%;
 }
 .info-cards {
     flex: 0.25;
@@ -100,6 +100,8 @@ body {
         border-right: none; /* Remove the right border */
         border-bottom: 1px solid #ccc; /* Add a bottom border */
         order: 2;
+        max-height: 70%;
+        overflow-y: scroll;
     }
 
     #map {

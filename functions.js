@@ -14,19 +14,19 @@ async function parseCsv() {
             let rows = data.split('\n').map(row => row.trim()).filter(row => row.length); // Splits each row into its own element, trims whitespace, and filters any empty rows
             parsedData = rows.slice(1).map(row => {
                 const columns = row.split(',');
-                return columns.map(column => 
-                    column.replace(/^"|"$/g, '').replace(/%/g, ',')
+                return columns.map(column =>
+                    column.replace(/^"|"$/g, '').replace(/%/g, ',') // Replaces temp % characters in csv with commas, resulting in a full form address
                 );
             });
-            
+
             // Parsing the formatted data for the coordinates and 
             // coordinates = parsedData.map(item => [+item[5], +item[6]]); // Includes tracks that have 'null' for the coordinates and stores the values as floats
             coordinates = parsedData.filter(item => item[5] !== 'null' && item[6] !== 'null').map(item => [+item[5], +item[6]]); // Omits tracks that do not have coordinates and converts values to a float
-            
+
             locations = parsedData.map(item => item[0]);
         })
         .catch(err => console.error(err)
-    );
+        );
 }
 
 async function focusOnMarker(locationId) {

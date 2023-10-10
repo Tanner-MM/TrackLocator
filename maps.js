@@ -27,6 +27,7 @@ async function main() {
 
     await initMap();
 
+    // Define info card template
     customElements.define(
         "track-card",
         class extends HTMLElement {
