@@ -5,10 +5,11 @@ let parsedData = []; // All csv data, parsed into rows and columns
 let markers = []; // All marker objects
 let tracks = [];
 
-
+let currentHighlightedCard = null;
+let infowindow;
 
 async function parseCsv() {
-    await fetch('Track-Data.csv')
+    await fetch('https://docs.google.com/spreadsheets/d/e/2PACX-1vRHXMq5l0JBWFM7Rohunawo0q6vFnYu24AIBBwgkaycv2LJaFAefYhNwzGMmkWvfKqYODs28EWhD6n3/pub?gid=0&single=true&output=csv')
         .then(res => res.text())
         .then(data => {
             let rows = data.split('\n').map(row => row.trim()).filter(row => row.length); // Splits each row into its own element, trims whitespace, and filters any empty rows
@@ -29,21 +30,8 @@ async function parseCsv() {
         );
 }
 
-async function focusOnMarker(locationId) {
-    // Loop through all markers to find the one with the matching 
-    for (let marker of markers) {
-        if (marker.get('title') === locationId) {
-            map.setCenter(marker.getPosition(), 1);
-
-            // Optionally, you can also open an info window or animate the marker here
-            marker.setAnimation(google.maps.Animation.BOUNCE);
-            setTimeout(() => marker.setAnimation(null), 1000); // Stop bouncing after 1s
-        }
-    }
-}
-
 async function placeMarkers() {
-    let infowindow = new google.maps.InfoWindow({});
+    infowindow = new google.maps.InfoWindow({});
 
     coordinates.forEach((coordinate, i) => {
         let marker = new google.maps.Marker({
@@ -61,19 +49,19 @@ async function placeMarkers() {
     });
 }
 
+function createInfoWindows() {
+    
+}
+
 function generateInfoCards() {
-    for (let i = 0; i < parsedData.length; i++) {
-        const row = parsedData[i];
-        const obj = {
-            id: i.toString(), // Convert the loop iterator to a string
-            trackName: row[0],
-            address: row[4],
-            email: row[8],
-            website: row[9],
-            phoneNumber: row[7],
-        };
-        tracks.push(obj);
-    }
+    tracks = parsedData.map((row, i) => ({
+        id: i.toString(),
+        trackName: row[0],
+        address: row[4],
+        email: row[8],
+        website: row[9],
+        phoneNumber: row[7],
+    }));
     generateCardsElements(); // Generates the info card elements
 }
 
@@ -93,6 +81,34 @@ function generateCardsElements() {
     });
 }
 
+async function focusOnMarker(locationId) {
+    // Loop through all markers to find the one with the matching 
+    for (let marker of markers) {
+        if (marker.get('title') === locationId) {
+            map.setCenter(marker.getPosition(), 1);
+
+            // Optionally, you can also open an info window or animate the marker here
+            marker.setAnimation(google.maps.Animation.BOUNCE);
+            setTimeout(() => marker.setAnimation(null), 1000); // Stop bouncing after 1s
+
+            // Scroll to the corresponding info card
+            let trackCard = document.querySelector(`track-card[data-name="${locationId}"]`);
+            if (trackCard) {
+                trackCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+                if (currentHighlightedCard)
+                    currentHighlightedCard.card.classList.remove('highlighted');
+
+                // Add a class to highlight the card
+                trackCard.card.classList.add('highlighted');
+                
+                currentHighlightedCard = trackCard;
+
+            }
+        }
+    }
+}
+
 function createClickListeners() {
     document.querySelectorAll('track-card').forEach(card => {
         card.addEventListener('click', function () {
@@ -100,4 +116,12 @@ function createClickListeners() {
             focusOnMarker(locationId);
         });
     });
+
+    // Add click event listeners to markers
+    for (let marker of markers) {
+        marker.addListener('click', function() {
+            let locationId = marker.get('title');
+            focusOnMarker(locationId);
+        });
+    }
 }
