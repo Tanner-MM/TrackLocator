@@ -1,71 +1,43 @@
-customElements.define(
-    "track-card",
-    class extends HTMLElement {
-      constructor() {
-        super();
-        const template = document.getElementById(
-          "track-card",
-        ).content;
-        const shadowRoot = this.attachShadow({ mode: "open" });
-        shadowRoot.appendChild(template.cloneNode(true));
-      }
-    },
-  );
-const tracks = [
-    {  
-        trackName: "BWS Raceway",
-        address: "Location A address",
-        email: "Email A",
-        website: "This is a website for Location A.",
-        phoneNumber: "(999) 999-9999",
-    },
-    {
-        trackName: "SHARC",
-        address: "Location B address",
-        email: "Email B",
-        website: "This is a website for Location B.",
-        phoneNumber: "(999) 999-9999",
-    },
-    // {
-    //     trackName: "Track C Title",
-    //     address: "Location C address",
-    //     email: "Email C",
-    //     website: "This is a website for Location C.",
-    //     phoneNumber: "(999) 999-9999",
-    // },
-    // ... more locations ...
-];
-
-const trackContainer = document.getElementById("track-container");
-tracks.forEach(track => {
-    const trackEl = document.createElement("track-card");
-    trackEl.setAttribute('data-name', track.trackName);
-    for (let [key, value] of Object.entries(track)) {
-        let propEl = document.createElement("span");
-        propEl.setAttribute("slot", key);
-        propEl.textContent = value;
-        trackEl.appendChild(propEl);
-    }
-
-    trackContainer.appendChild(trackEl);
-});
+let map;
+let coordinates = []; // Holds a list of all coordinate pairs for each track
+let locations = []; // List of all track names
+let parsedData = []; // All csv data, parsed into rows and columns
+let markers = []; // All marker objects
+let tracks = [];
 
 
-// Click listener for info card objects
-document.querySelectorAll('track-card').forEach(card => {
-    card.addEventListener('click', function() {
-        let locationId = card.getAttribute('data-name');
-        focusOnMarker(locationId);
-    });
-});
+
+async function parseCsv() {
+    await fetch('Track-Data.csv')
+        .then(res => res.text())
+        .then(data => {
+            let rows = data.split('\n').map(row => row.trim()).filter(row => row.length); // Splits each row into its own element, trims whitespace, and filters any empty rows
+            parsedData = rows.slice(1).map(row => {
+                const columns = row.split(',');
+                return columns.map(column => 
+                    column.replace(/^"|"$/g, '').replace(/%/g, ',')
+                );
+            });
+            
+            // Parsing the formatted data for the coordinates and 
+            // coordinates = parsedData.map(item => [+item[5], +item[6]]); // Includes tracks that have 'null' for the coordinates and stores the values as floats
+            coordinates = parsedData.filter(item => item[5] !== 'null' && item[6] !== 'null').map(item => [+item[5], +item[6]]); // Omits tracks that do not have coordinates and converts values to a float
+            
+            locations = parsedData.map(item => item[0]);
+        })
+        .catch(err => console.error(err)
+    );
+}
 
 async function focusOnMarker(locationId) {
-    
     // Loop through all markers to find the one with the matching 
     for (let marker of markers) {
         if (marker.get('title') === locationId) {
-            map.setCenter(marker.getPosition(), 4);
+            map.setCenter(marker.getPosition(), 1);
+
             // Optionally, you can also open an info window or animate the marker here
+            marker.setAnimation(google.maps.Animation.BOUNCE);
+            setTimeout(() => marker.setAnimation(null), 1000); // Stop bouncing after 1s
         }
     }
 }
@@ -88,4 +60,44 @@ async function placeMarkers() {
         });
     });
 }
-  
+
+function generateInfoCards() {
+    for (let i = 0; i < parsedData.length; i++) {
+        const row = parsedData[i];
+        const obj = {
+            id: i.toString(), // Convert the loop iterator to a string
+            trackName: row[0],
+            address: row[4],
+            email: row[8],
+            website: row[9],
+            phoneNumber: row[7],
+        };
+        tracks.push(obj);
+    }
+    generateCardsElements(); // Generates the info card elements
+}
+
+function generateCardsElements() {
+    const trackContainer = document.getElementById("track-container");
+    tracks.forEach(track => {
+        const trackEl = document.createElement("track-card");
+        trackEl.setAttribute('data-name', track.trackName);
+        for (let [key, value] of Object.entries(track)) {
+            let propEl = document.createElement("span");
+            propEl.setAttribute("slot", key);
+            propEl.textContent = value;
+            trackEl.appendChild(propEl);
+        }
+
+        trackContainer.appendChild(trackEl);
+    });
+}
+
+function createClickListeners() {
+    document.querySelectorAll('track-card').forEach(card => {
+        card.addEventListener('click', function () {
+            let locationId = card.getAttribute('data-name');
+            focusOnMarker(locationId);
+        });
+    });
+}

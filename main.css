@@ -55,12 +55,15 @@ body {
     display: flex;
     flex: 1;
     align-items: stretch;
+    overflow: hidden;
 }
 .info-cards {
     flex: 0.25;
     overflow-y: scroll;
+    overflow-x: hidden;
     padding: 10px;
     border-right: 1px solid #ccc;
+    text-wrap: wrap;
 }
 
 .card {
