@@ -10,6 +10,7 @@ let map;
 let coordinates = []; // Holds a list of all coordinate pairs for each track
 let locations = [];
 let parsedData = [];
+let markers = [];
 
 async function initMap() {
     // const pos = { lat:  39.776326, lng: -121.8676 }; // Set coordinates for the pin, Method Marketing.
@@ -22,22 +23,13 @@ async function initMap() {
     // The map, centered at me, Tanner
     map = new Map(document.getElementById("map"), {
         center: pos,
-        mapId: "DEMO_MAP_ID",
+        mapId: "Track-Map",
         zoom: 5,
     });
-
-    // For a single marker
-    // The marker, positioned at at Method Marketing
-    // const marker = new AdvancedMarkerElement({
-    //     map: map,
-    //     position: pos,
-    //     title: "Tanner",
-    // });
 
     await fetch('Track-Data.csv')
         .then(res => res.text())
         .then(data => {
-            // Lists that are correct
             let rows = data.split('\n').map(row => row.trim()).filter(row => row.length); // Splits each row into its own element, trims whitespace, and filters any empty rows
             parsedData = rows.slice(1).map(row => {
                 const columns = row.split(',');
@@ -57,30 +49,9 @@ async function initMap() {
     // console.log("\Parsed Data\n", parsedData);
     
 
-
-    let infowindow = new google.maps.InfoWindow({});
-    let marker;
-    for (let i = 0; i < coordinates.length; i++) {
-        marker = new google.maps.Marker({
-            position: new google.maps.LatLng(coordinates[i][0], coordinates[i][1]),
-            map: map,
-            // icon: {
-            //     path: 'M -2,0 0,-2 2,0 0,2 z',
-            //     fillColor: '#FF0000',
-            //     fillOpacity: 1,
-            //     scale: 1
-            // }
-            title: locations[i],
-            // opacity: .5
-        });
-        google.maps.event.addListener(marker, 'click', (function (marker, i) {
-            return function () {
-                infowindow.setContent(locations[i]);
-                infowindow.open(map, marker);
-                // marker.setOpacity(1)
-            }
-        })(marker, i));
-  }
+    await placeMarkers();
+    // console.log(markers)
 }
+
 
 initMap();

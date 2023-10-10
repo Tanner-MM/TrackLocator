@@ -32,13 +32,6 @@
             <!-- ... other states ... -->
           </select>
           
-          <label for="track-type">Track Type:</label>
-          <select id="track-type">
-            <option value="type1">Type 1</option>
-            <option value="type2">Type 2</option>
-            <option value="type3">Type 3</option>
-            <!-- ... other track types ... -->
-          </select>
           
           <!-- Add more filters as needed -->
           <button type="submit" class="apply-filter">Apply Filters</button>
@@ -102,13 +95,13 @@
                     
                 </style>
 
-                <div class="card" style="max-width: 18rem;">
+                <div class="card">
                   <div class="card-title">
                     <slot name="trackName"></slot>
                   </div>
                   <div class="card-text">
                     <div class="mb-3">
-                      <slot name="address"></slot><br>
+                      <slot name="address"></slot>
                     </div>
                     <div class="mb-3">
                       <slot name="website"></slot>
