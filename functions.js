@@ -29,7 +29,6 @@ async function parseCsv() {
 }
 
 async function placeMarkers() {
-    infowindow = new google.maps.InfoWindow({});
 
     coordinates.forEach((coordinate, i) => {
         let marker = new google.maps.Marker({
@@ -40,14 +39,11 @@ async function placeMarkers() {
     
         markers.push(marker);
     
-        google.maps.event.addListener(marker, 'click', function() {
-            infowindow.setContent(locations[i]);
-            infowindow.open(map, marker);
-        });
+        createInfoWindow(marker, i);
     });
 }
 
-function createInfoWindows(marker, index) {
+function createInfoWindow(marker, index) {
     infowindow = new google.maps.InfoWindow({});
     
     google.maps.event.addListener(marker, 'click', function() {
