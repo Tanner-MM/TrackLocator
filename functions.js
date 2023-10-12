@@ -23,9 +23,7 @@ async function parseCsv() {
 
             // console.log(parsedData);
 
-            // coordinates = parsedData.map(item => [+item[5], +item[6]]); // Includes tracks that have 'null' for the coordinates and stores the values as floats
             coordinates = parsedData.filter(item => item[7] !== 'null' && item[8] !== 'null').map(item => [+item[7], +item[8]]); // Omits tracks that do not have coordinates and converts values to a float
-
             locations = parsedData.map(item => item[0]);
         })
         .catch(err => console.error(err)
@@ -49,7 +47,7 @@ async function placeMarkers() {
 
 function createInfoWindow(marker, index) {
     infowindow = new google.maps.InfoWindow({
-        content: locations[index]
+        content: `locations`[index]
     });
     
     google.maps.event.addListener(marker, 'click', function() {
@@ -63,28 +61,31 @@ function createInfoWindow(marker, index) {
     });
 }
 
-function generateInfoCards() {
+function generateCardInfo() {
     const tracks = parsedData.map((row, i) => ({
         id: i.toString(),
         trackName: row[0],
         address: row[6],
         email: row[10],
         website: row[11],
+        facebook: row[12],
         phoneNumber: row[9],
     }));
-    generateCardsElements(tracks); // Generates the info card elements
+    generateCards(tracks); // Generates the info card elements
 }
 
-function generateCardsElements(tracks) {
+function generateCards(tracks) {
     const trackContainer = document.getElementById("track-container");
     tracks.forEach(track => {
         const trackEl = document.createElement("track-card");
         trackEl.setAttribute('data-name', track.trackName);
         for (let [key, value] of Object.entries(track)) {
             let propEl = document.createElement("span");
-            propEl.setAttribute("slot", key);
-            propEl.textContent = value;
-            trackEl.appendChild(propEl);
+            if (!!value) { // Check for missing value. If falsy, skip it.
+                propEl.setAttribute("slot", key);
+                propEl.textContent = value;
+                trackEl.appendChild(propEl);
+            }
         }
 
         trackContainer.appendChild(trackEl);
