@@ -10,7 +10,10 @@ let lastOpenedInfoWindow = null;
 let markerInfoWindows = {};
 
 // Radius search function that gives a list of all entries within the center radius
-// https://script.google.com/macros/s/AKfycbxDyE2Ky9w5GA9B8RlBbpew5d6GscF0rjJLR39NIiVGCd3e6WSDjLQir32b818Xy5tD/exec?centerLat=YOUR_LAT&centerLng=YOUR_LNG&radius=YOUR_RADIUS
+// let radiusSearchUrl = "https://script.google.com/macros/s/AKfycbxDyE2Ky9w5GA9B8RlBbpew5d6GscF0rjJLR39NIiVGCd3e6WSDjLQir32b818Xy5tD/exec?centerLat=YOUR_LAT&centerLng=YOUR_LNG&radius=YOUR_RADIUS";
+
+// TODO - Implement radius search functionality by perfomring the calculations here with js rather than in the sheets script and then applying a hidden class to the ones that are outside the search radius.
+// Figure a way to also hide map pins retoractively too
 
 async function parseCsv() {
     await fetch('https://docs.google.com/spreadsheets/d/e/2PACX-1vRHXMq5l0JBWFM7Rohunawo0q6vFnYu24AIBBwgkaycv2LJaFAefYhNwzGMmkWvfKqYODs28EWhD6n3/pub?gid=0&single=true&output=csv')
