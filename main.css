@@ -6,7 +6,6 @@
 #map {
     flex: 0.75;
     padding: 10px;
-
 }
 
 html,
@@ -33,11 +32,31 @@ body {
     border-radius: 1%;
 }
 
-
 .filter-section {
-    padding: 10px;
-    border-bottom: 1px solid #ccc;
     display: flex;
+    padding: 10px;
+    border: 1px solid #ccc;
+    background-color: #ffffff;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    margin: 8px; /* Optional: Add some margin for spacing */
+}
+
+.apply-filter,
+.remove-filter {
+    padding: 7px 10px;
+    background-color: #007BFF; /* Blue color */
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-left: 1rem;
+}
+
+.apply-filter:hover,
+.remove-filter:hover {
+    background-color: #0056b3;
 }
 
 .main-content {
@@ -45,7 +64,9 @@ body {
     flex: 1;
     align-items: stretch;
     max-height: 100%;
-    overflow: hidden;
+    overflow-y: scroll;
+    background-color: #49759fff;
+
 }
 .info-cards {
     flex: 0.25;
@@ -61,14 +82,17 @@ body {
     margin-bottom: 10px;
 }
 
-.apply-filter {
-    
+.hidden {
+    display: none;
 }
 
+
+
+
 @media (max-width: 768px) {
-    .filter-section {
+    /* .filter-section {
         flex-direction: column;
-    }
+    } */
     
     .filter-section > select {
         justify-content: center; /* Center the filter options on smaller screens */
@@ -95,6 +119,18 @@ body {
     #map {
         flex: none; /* Reset the flex value */
         height: 100%;
+    }
+    .filter-section {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .filter-section label,
+    .filter-section select,
+    .filter-section button {
+        margin-bottom: 0;
+        margin-right: 10px; 
     }
 }
 
