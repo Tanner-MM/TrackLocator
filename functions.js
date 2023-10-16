@@ -30,11 +30,11 @@ async function parseCsv() {
             locations = parsedData.map(item => item[0]);
         })
         .catch(err => console.error(err)
-    );
+        );
 }
 
 async function placeMarkers() {
-    coordinates.forEach((coordinate, i) => {
+    coordinates.map((coordinate, i) => {
         let marker = new google.maps.Marker({
             position: new google.maps.LatLng(coordinate[0], coordinate[1]),
             map: map,
@@ -181,22 +181,25 @@ function filterByRadius(starterLocation = { lat, lng }, radius) {
     });
 
     // Hide or show markers based on the filtered tracks
-    markers.forEach((marker, index) => {
+    for (let marker of markers) {
         if (visibleTracks.some(track => track.trackName === marker.get('title'))) {
             marker.setMap(map);
         } else {
             marker.setMap(null);
         }
-    });
+    }
+
 
     // Hide or show track cards based on the filtered tracks
-    document.querySelectorAll('track-card').forEach(card => {
+    let cards = document.querySelectorAll('track-card');
+    for (let card of cards) {
         if (visibleTracks.some(track => track.trackName === card.getAttribute('data-name'))) {
             card.style.display = '';
         } else {
             card.style.display = 'none';
         }
-    });
+    }
+
 
     return visibleTracks;
 }
@@ -229,7 +232,10 @@ function applyRadiusFilter() {
 
 async function updateUIForFilteredTracks(filteredTracks) {
     // Hide all markers and track cards initially
-    markers.forEach(marker => marker.setMap(null));
+    
+    for (let marker of markers) {
+        marker.setMap(null);
+    }
     let cards = document.querySelectorAll('track-card');
     for (let card of cards) {
         card.style.display = 'none';
@@ -247,15 +253,16 @@ async function updateUIForFilteredTracks(filteredTracks) {
     }
 
     // Show markers and track cards that are within the radius
-    filteredTracks.forEach(track => {
+    for (let track of filteredTracks) {
         const marker = markers[locations.indexOf(track.trackName)];
         if (marker) marker.setMap(map);
-        
+    
         const trackCard = document.querySelector(`track-card[data-name="${track.trackName}"]`);
         if (trackCard) {
             trackCard.style.display = '';
         }
-    });
+    }
+    
 }
 
 function getUserLocation() {
@@ -290,7 +297,7 @@ function removeFilters() {
     // Reset the dropdown value to default
     radiusDropdown.value = "all";
     refreshMapWithAllLocations();
-    
+
     // Reset the last applied filter value
     lastAppliedFilter = null;
 }
@@ -300,6 +307,6 @@ function refreshMapWithAllLocations() {
     for (let marker of markers) { // Clear existing markers
         marker.setMap(map);
     }
-    
+
     generateCardInfoAndClickListeners(); // Regenerate the info cards and their event listeners.
 }
