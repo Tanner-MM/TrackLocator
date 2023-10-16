@@ -64,7 +64,6 @@ body {
     flex: 1;
     align-items: stretch;
     max-height: 100%;
-    overflow-y: scroll;
     background-color: #49759fff;
 
 }
@@ -74,6 +73,7 @@ body {
     overflow-x: hidden;
     padding: 10px;
     border-right: 1px solid #ccc;
+    align-items: center;
 }
 
 .card {
@@ -90,9 +90,6 @@ body {
 
 
 @media (max-width: 768px) {
-    /* .filter-section {
-        flex-direction: column;
-    } */
     
     .filter-section > select {
         justify-content: center; /* Center the filter options on smaller screens */
@@ -108,16 +105,16 @@ body {
     }
 
     .info-cards {
-        flex: none; /* Reset the flex value */
-        border-right: none; /* Remove the right border */
-        border-bottom: 1px solid #ccc; /* Add a bottom border */
+        flex: none;
+        border-right: none;
+        border-bottom: 1px solid #ccc;
         order: 2;
         overflow-y: scroll;
         max-height: 70%;
     }
 
     #map {
-        flex: none; /* Reset the flex value */
+        flex: none;
         height: 100%;
     }
     .filter-section {

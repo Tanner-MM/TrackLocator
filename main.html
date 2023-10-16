@@ -9,6 +9,129 @@
   </head>
   <body>
     <style>
+* {
+    margin: 0;
+    padding: 0;
+}
+
+#map {
+    flex: 0.75;
+    padding: 10px;
+}
+
+html,
+body {
+    height: 100%;
+}
+
+
+
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+.container {
+    display: flex;
+    flex-direction: column;
+    width: 80%;
+    height: 80%;
+    border: 1px solid #ccc;
+    border-radius: 1%;
+}
+
+.filter-section {
+    display: flex;
+    padding: 10px;
+    border: 1px solid #ccc;
+    background-color: #ffffff;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    margin: 8px; /* Optional: Add some margin for spacing */
+}
+
+.apply-filter,
+.remove-filter {
+    padding: 7px 10px;
+    background-color: #007BFF; /* Blue color */
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-left: 1rem;
+}
+
+.apply-filter:hover,
+.remove-filter:hover {
+    background-color: #0056b3;
+}
+
+.main-content {
+    display: flex;
+    flex: 1;
+    align-items: stretch;
+    max-height: 100%;
+    background-color: #49759fff;
+
+}
+.info-cards {
+    flex: 0.25;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    padding: 10px;
+    border-right: 1px solid #ccc;
+    align-items: center;
+}
+
+.card {
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+.hidden {display: none;}
+
+@media (max-width: 768px) {
+    .filter-section > select {
+        justify-content: center; /* Center the filter options on smaller screens */
+        width: 100%; /* Take up the full width */
+    }
+    .filter-section button {
+        width: 100%; /* Make the button take up the full width */
+        margin-top: 10px; /* Add some margin to the top of the button */
+    }
+    .main-content {
+        flex-direction: column;
+    }
+    .info-cards {
+        flex: none;
+        border-right: none;
+        border-bottom: 1px solid #ccc;
+        order: 2;
+        overflow-y: scroll;
+        max-height: 70%;
+    }
+    #map {
+        flex: none;
+        height: 100%;
+    }
+    .filter-section {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .filter-section label,
+    .filter-section select,
+    .filter-section button {
+        margin-bottom: 0;
+        margin-right: 10px; 
+    }
+}
+
 
     </style>
 
@@ -28,7 +151,6 @@
             <option value="175">175 miles</option>
             <option value="200">200 miles</option>
             <option value="300">300 miles</option>
-            <option value="2000">300 miles</option>
           </select>
      
           <!-- Add more filters as needed -->
@@ -38,6 +160,7 @@
 
       <div class="main-content">
           <div class="info-cards">
+            <div id="no-results-message" style="display: none;">There are no locations found within that radius. Please try another search.</div>
 
             <div id="track-container"></div>
               <template id="track-card">
@@ -68,12 +191,7 @@
                       cursor: pointer;
                     }
 
-                    .card-text {
-                      font-size: 14px;
-                      color: #777;
-                    }
                     .mb-3 { margin-bottom: 3px; }
-                    .mb-10 { margin-bottom: 10px; }
                     .highlighted {
                       border: 2px solid #49759fff;
                       background-color: #E8E8E8;
@@ -84,33 +202,27 @@
                       max-width: 1.2rem;
                       margin: 0 5px;
                     }
-                    .link-container {
-                      display: flex;
-                      justify-content: flex-end;
-                    }
+                    
 
-                    .card-title {
-
-                    }
                     #fb-link { fill: #0a66ff; }
                                  
                 </style>
 
                 <div class="card">
-                  <div id="card-title">
+                  <div id="card-title" style="display: inline-block;">
                     <slot name="trackName"></slot>
                   </div>
-                  <div class="card-text">
+                  <div class="card-text" style="font-size: 14px; color: #777">
                     <div class="mb-3">
                       <slot name="address"></slot>
                     </div>
                     <div class="mb-3">
                       <slot name="phoneNumber"></slot>                      
                     </div>
-                    <div class="mb-10">
+                    <div style="margin-bottom: 10px;">
                       <slot name="email"></slot>                     
                     </div>
-                    <div class="link-container">
+                    <div class="link-container" style="display: flex; justify-content: flex-end;">
                       <div class="mb-3 link" id="website-link">
                         <slot name="website"></slot>
                       </div>

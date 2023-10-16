@@ -118,7 +118,7 @@ async function focusOnMarker(locationId) {
         if (marker.get('title') === locationId) {
             map.setCenter(marker.getPosition(), 1);
             marker.setAnimation(google.maps.Animation.BOUNCE);
-            setTimeout(() => marker.setAnimation(null), 1000);
+            setTimeout(() => marker.setAnimation(null), 1000); // Bounce animation for 1s to indicate which is selected
 
             // Open the corresponding infoWindow
             if (markerInfoWindows[locationId]) {
@@ -201,21 +201,6 @@ function filterByRadius(starterLocation = { lat, lng }, radius) {
     return visibleTracks;
 }
 
-// function applyRadiusFilter() {
-//     const radiusDropdown = document.getElementById("radius-search"); // Grabs the dropdown element
-//     const radius = parseFloat(radiusDropdown.options[radiusDropdown.selectedIndex].value); // Grabs the value submitted by user for the radius
-    
-//     // Assuming the center of the map is the point from which the radius is calculated.
-//     const center = map.getCenter();
-//     const starterLocation = { lat: center.lat(), lng: center.lng() };
-
-//     // Filter tracks based on the radius
-//     const filteredTracks = filterByRadius(starterLocation, radius);
-
-//     // Update the UI based on the filtered tracks
-//     updateUIForFilteredTracks(filteredTracks);
-// }
-
 function applyRadiusFilter() {
     const radiusDropdown = document.getElementById("radius-search");
     const selectedValue = radiusDropdown.options[radiusDropdown.selectedIndex].value;
@@ -242,19 +227,30 @@ function applyRadiusFilter() {
 }
 
 
-function updateUIForFilteredTracks(filteredTracks) {
+async function updateUIForFilteredTracks(filteredTracks) {
     // Hide all markers and track cards initially
     markers.forEach(marker => marker.setMap(null));
-    document.querySelectorAll('track-card').forEach(card => card.style.display = 'none');
+    let cards = document.querySelectorAll('track-card');
+    for (let card of cards) {
+        card.style.display = 'none';
+    }
+    const noResultsMessage = document.getElementById("no-results-message");
 
-    console.log(filteredTracks)
+    if (filteredTracks.length === 0) {
+        // If no tracks are found, display the message and return
+        noResultsMessage.style.display = 'block';
+        noResultsMessage.style.color = 'white';
+        return;
+    } else {
+        // If tracks are found, hide the message and continue
+        noResultsMessage.style.display = 'none';
+    }
 
     // Show markers and track cards that are within the radius
     filteredTracks.forEach(track => {
         const marker = markers[locations.indexOf(track.trackName)];
-        if (marker) {
-            marker.setMap(map);
-        }
+        if (marker) marker.setMap(map);
+        
         const trackCard = document.querySelector(`track-card[data-name="${track.trackName}"]`);
         if (trackCard) {
             trackCard.style.display = '';
@@ -279,23 +275,19 @@ function getUserLocation() {
     });
 }
 
-// function removeFilters() {
-//     // Reset any filter values to their defaults
-//     document.getElementById("radius-search").value = "all"; // Set default 6000 to ensure all of USA is 
-//     refreshMapWithAllLocations(); // Refresh the map to show all locations
-//     lastAppliedFilter = null;
-// }
 
 function removeFilters() {
+    const noResultsMessage = document.getElementById("no-results-message");
+    noResultsMessage.style.display = 'none';
     const radiusDropdown = document.getElementById("radius-search");
     const currentValue = radiusDropdown.value;
 
     // If the current value is already "all", return early
     if (currentValue === "all" && lastAppliedFilter === null) {
-        return;
+        return; // Prevents repeat submissions
     }
 
-    // Reset the dropdown value to "all"
+    // Reset the dropdown value to default
     radiusDropdown.value = "all";
     refreshMapWithAllLocations();
     
@@ -308,5 +300,6 @@ function refreshMapWithAllLocations() {
     for (let marker of markers) { // Clear existing markers
         marker.setMap(map);
     }
+    
     generateCardInfoAndClickListeners(); // Regenerate the info cards and their event listeners.
 }
