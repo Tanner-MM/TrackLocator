@@ -30,6 +30,8 @@ async function parseCsv() {
                 );
             });
 
+            console.log(parsedData)
+
             coordinates = parsedData.filter(item => item[7] !== 'null' && item[8] !== 'null').map(item => [+item[7], +item[8]]); // Omits tracks that do not have coordinates and converts values to a float
             locations = parsedData.map(item => item[0]);
         })
@@ -83,6 +85,7 @@ function generateCardInfoAndClickListeners() {
         email: row[10],
         website: row[11],
         facebook: row[12],
+        instagram: row[13],
         phoneNumber: row[9],
         coordinates: {
             lat: row[7],
