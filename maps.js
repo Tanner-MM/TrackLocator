@@ -1,4 +1,35 @@
-function createCustomElement() {
+
+async function initMap() {
+    const { Map } = await google.maps.importLibrary("maps");
+
+    createMap = (pos, zoom = 4) => {
+        map = new Map(document.getElementById("map"), {
+            center: pos,
+            mapId: "Track-Map",
+            zoom: zoom,
+        });
+    }
+
+    try {
+        const pos = await getUserLocation();
+        createMap(pos, 8);
+
+    } catch (error) {
+        console.error("Error fetching user's location:", error.message);
+        const pos = { lat: 39.84181336054336, lng: -99.90822182318774 }; // Center of USA as default map center
+        createMap(pos, 4);
+    }
+
+    await parseCsv();
+    placeMarkers();
+}
+
+
+
+
+async function main() { // entry point
+    await initMap();
+    
     customElements.define(
         "track-card",
         class extends HTMLElement {
@@ -85,40 +116,7 @@ function createCustomElement() {
             }
         }
     );
-}
 
-
-async function initMap() {
-    const { Map } = await google.maps.importLibrary("maps");
-
-    createMap = (pos, zoom = 4) => {
-        map = new Map(document.getElementById("map"), {
-            center: pos,
-            mapId: "Track-Map",
-            zoom: zoom,
-        });
-    }
-
-    try {
-        const pos = await getUserLocation();
-        createMap(pos, 8);
-
-    } catch (error) {
-        console.error("Error fetching user's location:", error.message);
-        const pos = { lat: 39.84181336054336, lng: -99.90822182318774 }; // Center of USA as default map center
-        createMap(pos, 4);
-    }
-
-    await parseCsv();
-    await placeMarkers();
-}
-
-
-
-
-async function main() { // entry point
-    await initMap();
-    createCustomElement();
     generateCardInfoAndClickListeners(); // Creates objects to populate the card data
 }
 

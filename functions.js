@@ -30,17 +30,16 @@ async function parseCsv() {
                 );
             });
 
-            console.log(parsedData)
-
+          
             coordinates = parsedData.filter(item => item[7] !== 'null' && item[8] !== 'null').map(item => [+item[7], +item[8]]); // Omits tracks that do not have coordinates and converts values to a float
             locations = parsedData.map(item => item[0]);
         })
         .catch(err => console.error(err)
-        );
+    );
 }
 
-async function placeMarkers() {
-    coordinates.map((coordinate, i) => {
+function placeMarkers() {
+    coordinates.forEach((coordinate, i) => {
         let marker = new google.maps.Marker({
             position: new google.maps.LatLng(coordinate[0], coordinate[1]),
             map: map,
@@ -50,18 +49,6 @@ async function placeMarkers() {
         createInfoWindow(marker, i);
     });
 }
-/*
-async function placeMarkers(applyFilters = true) {
-    // ... your existing code
-
-    if (applyFilters) {
-        // Apply the radius filter or any other filters
-    }
-
-    // ... rest of your code
-}
-
-*/
 
 function createInfoWindow(marker, index) {
     infowindow = new google.maps.InfoWindow({
@@ -202,12 +189,10 @@ function filterByRadius(starterLocation = { lat, lng }, radius) {
     for (let card of cards) {
         if (visibleTracks.some(track => track.trackName === card.getAttribute('data-name'))) {
             card.style.display = '';
-        } else {
+        } else { 
             card.style.display = 'none';
         }
     }
-
-
     return visibleTracks;
 }
 
@@ -310,10 +295,11 @@ function removeFilters() {
 }
 
 
-function refreshMapWithAllLocations() {
+async function refreshMapWithAllLocations() {
     for (let marker of markers) { // Clear existing markers
         marker.setMap(map);
     }
 
     generateCardInfoAndClickListeners(); // Regenerate the info cards and their event listeners.
+    await placeMarkers();
 }
