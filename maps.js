@@ -1,4 +1,3 @@
-
 async function initMap() {
     const { Map } = await google.maps.importLibrary("maps");
 
@@ -29,7 +28,7 @@ async function initMap() {
 
 async function main() { // entry point
     await initMap();
-    
+
     customElements.define(
         "track-card",
         class extends HTMLElement {
@@ -69,7 +68,7 @@ async function main() { // entry point
                     websiteLink.addEventListener('click', () => {
                         window.open(websiteSlot.textContent, '_blank');
                     });
-    
+
                     const cardTitle = this.shadowRoot.getElementById('card-title');
                     if (!!cardTitle) {
                         cardTitle.href = websiteSlot.textContent;
