@@ -1,240 +1,266 @@
 <html>
-  <head>
-    <title>Track Map</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   
-    <script src="./functions.js" defer></script>
-    <script src="./maps.js" defer></script>
-  </head>
-  <body>
-    <style>
 
+<head>
+  <title>Track Map</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-#map {
-    flex: 0.75;
-    padding: 10px;
-}
+  <script src="./functions.js" defer></script>
+  <script src="./maps.js" defer></script>
+</head>
 
-body {
-    font-family: Arial, sans-serif;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    margin: 0;
-}
-.container {
-    display: flex;
-    flex-direction: column;
-    width: 80%;
-    height: 80%;
-    border: 1px solid #ccc;
-    border-radius: 1%;
-}
-
-.filter-section {
-    display: flex;
-    padding: 10px;
-    border: 1px solid #ccc;
-    background-color: #ffffff;
-    border-radius: 5px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    margin: 8px; /* Optional: Add some margin for spacing */
-    align-items: center;
-    gap: 10px;
-}
-
-.apply-filter,
-.remove-filter {
-    padding: 7px 10px;
-    background-color: #007BFF; /* Blue color */
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-.apply-filter:hover,
-.remove-filter:hover {
-    background-color: #0056b3;
-}
-
-.main-content {
-    display: flex;
-    flex: 1;
-    align-items: stretch;
-    max-height: 100%;
-    background-color: #49759fff;
-
-}
-.info-cards {
-    flex: 0.25;
-    overflow-y: scroll;
-    overflow-x: hidden;
-    padding: 10px;
-    border-right: 1px solid #ccc;
-    align-items: center;
-}
-
-.card {
-    border: 1px solid #ccc;
-    padding: 10px;
-    margin-bottom: 10px;
-}
-
-.hidden {display: none;}
-
-@media (max-width: 768px) {
-    .filter-section > select {
-        justify-content: center; /* Center the filter options on smaller screens */
-        width: 100%; /* Take up the full width */
+<body>
+  <style>
+    #map {
+      flex: 0.75;
+      padding: 10px;
     }
-    .filter-section button {
-        width: 100%; /* Make the button take up the full width */
-        margin-top: 10px; /* Add some margin to the top of the button */
+
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
     }
+
+    .container {
+      display: flex;
+      flex-direction: column;
+      width: 80%;
+      height: 80%;
+      border: 1px solid #ccc;
+      border-radius: 1%;
+    }
+
+    .filter-section {
+      display: flex;
+      padding: 10px;
+      border: 1px solid #ccc;
+      background-color: #ffffff;
+      border-radius: 5px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      margin: 8px;
+      /* Optional: Add some margin for spacing */
+      align-items: center;
+      gap: 10px;
+    }
+
+    .apply-filter,
+    .remove-filter {
+      padding: 7px 10px;
+      background-color: #007BFF;
+      /* Blue color */
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .apply-filter:hover,
+    .remove-filter:hover {
+      background-color: #0056b3;
+    }
+
     .main-content {
-        flex-direction: column;
+      display: flex;
+      flex: 1;
+      align-items: stretch;
+      max-height: 100%;
+      background-color: #49759fff;
+
     }
+
     .info-cards {
+      flex: 0.25;
+      overflow-y: scroll;
+      overflow-x: hidden;
+      padding: 10px;
+      border-right: 1px solid #ccc;
+      align-items: center;
+    }
+
+    .card {
+      border: 1px solid #ccc;
+      padding: 10px;
+      margin-bottom: 10px;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    @media (max-width: 768px) {
+      .filter-section>select {
+        justify-content: center;
+        /* Center the filter options on smaller screens */
+        width: 100%;
+        /* Take up the full width */
+      }
+
+      .filter-section button {
+        width: 100%;
+        /* Make the button take up the full width */
+        margin-top: 10px;
+        /* Add some margin to the top of the button */
+      }
+
+      .main-content {
+        flex-direction: column;
+      }
+
+      .info-cards {
         flex: none;
         border-right: none;
         border-bottom: 1px solid #ccc;
         order: 2;
         overflow-y: scroll;
         max-height: 70%;
-    }
-    #map {
+      }
+
+      #map {
         flex: none;
         height: 100%;
-    }
-    .filter-section {
+      }
+
+      .filter-section {
         flex-direction: row;
         justify-content: space-between;
         align-items: center;
-    }
-    .filter-section label,
-    .filter-section select,
-    .filter-section button {
+      }
+
+      .filter-section label,
+      .filter-section select,
+      .filter-section button {
         margin-bottom: 0;
-        margin-right: 10px; 
+        margin-right: 10px;
+      }
     }
-}
+  </style>
+
+  <div class="container">
+    <div class="filter-section">
+      <h4>Filter Options:</h4>
+      <label for="radius-search">Radius:</label>
+      <select id="radius-search">
+        <option value="all">All Tracks</option>
+        <option value="5">5 miles</option>
+        <option value="10">10 miles</option>
+        <option value="25">25 miles</option>
+        <option value="50">50 miles</option>
+        <option value="100">100 miles</option>
+        <option value="125">125 miles</option>
+        <option value="150">150 miles</option>
+        <option value="175">175 miles</option>
+        <option value="200">200 miles</option>
+        <option value="300">300 miles</option>
+      </select>
+
+      <!-- Add more filters as needed -->
+      <button type="submit" class="apply-filter" onclick="applyRadiusFilter()">Apply Filters</button>
+      <button type="button" class="remove-filter" onclick="removeFilters()">Remove Filters</button>
+    </div>
+
+    <div class="main-content">
+      <div class="info-cards">
+        <div id="no-results-message" style="display: none;">There are no locations found within that radius. Please try
+          another search.</div>
+
+        <div id="track-container"></div>
+        <template id="track-card">
+          <link src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+            integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA=="
+            crossorigin="anonymous" referrerpolicy="no-referrer" />
+          <style>
+            .card {
+              border: 1px solid #49759fff;
+              padding: 10px;
+              margin: 10px 0;
+              border-radius: 5px;
+              transition: transform 0.4s;
+              /* Prepare for hover animation */
+              transition: background-color 0.3s ease;
+              background-color: #ffffff;
+            }
+
+            .card:hover {
+              transform: scale(1.02);
+              border-color: #49759fff;
+              background-color: #E8E8E8;
+            }
+
+            #card-title {
+              font-weight: bold;
+              font-size: 16px;
+              color: inherit;
+              line-height: 30px;
+            }
+
+            #card-title:hover {
+              text-decoration: underline;
+              cursor: pointer;
+            }
+
+            .mb-3 {
+              margin-bottom: 3px;
+            }
+
+            .highlighted {
+              border: 2px solid #49759fff;
+              background-color: #E8E8E8;
+            }
+
+            .link {
+              cursor: pointer;
+              max-width: 1.2rem;
+              margin: 0 5px;
+            }
 
 
-    </style>
+            #fb-link {
+              fill: #0a66ff;
+            }
+          </style>
 
-    <div class="container">
-      <div class="filter-section">
-          <h4>Filter Options:</h4>
-          <label for="radius-search">Radius:</label>
-          <select id="radius-search">
-            <option value="all">All Tracks</option>
-            <option value="5">5 miles</option>
-            <option value="10">10 miles</option>
-            <option value="25">25 miles</option>
-            <option value="50">50 miles</option>
-            <option value="100">100 miles</option>
-            <option value="125">125 miles</option>
-            <option value="150">150 miles</option>
-            <option value="175">175 miles</option>
-            <option value="200">200 miles</option>
-            <option value="300">300 miles</option>
-          </select>
-     
-          <!-- Add more filters as needed -->
-          <button type="submit" class="apply-filter" onclick="applyRadiusFilter()">Apply Filters</button>
-          <button type="button" class="remove-filter" onclick="removeFilters()">Remove Filters</button>
-      </div>
-
-      <div class="main-content">
-          <div class="info-cards">
-            <div id="no-results-message" style="display: none;">There are no locations found within that radius. Please try another search.</div>
-
-            <div id="track-container"></div>
-              <template id="track-card">
-                <link src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-                <style>
-                    .card {
-                      border: 1px solid #49759fff;
-                      padding: 10px;
-                      margin: 10px 0;
-                      border-radius: 5px;
-                      transition: transform 0.4s; /* Prepare for hover animation */
-                      transition: background-color 0.3s ease;
-                      background-color: #ffffff;
-                    }
-                    .card:hover {
-                      transform: scale(1.02);
-                      border-color: #49759fff;
-                      background-color: #E8E8E8;
-                    }
-                    #card-title {
-                      font-weight: bold;
-                      font-size: 16px;
-                      color: inherit;
-                      line-height: 30px;
-                    }
-                    #card-title:hover {
-                      text-decoration: underline;
-                      cursor: pointer;
-                    }
-
-                    .mb-3 { margin-bottom: 3px; }
-                    .highlighted {
-                      border: 2px solid #49759fff;
-                      background-color: #E8E8E8;
-                    }
-
-                    .link {
-                      cursor: pointer;
-                      max-width: 1.2rem;
-                      margin: 0 5px;
-                    }
-                    
-
-                    #fb-link { fill: #0a66ff; }
-                                 
-                </style>
-
-                <div class="card">
-                  <div id="card-title" style="display: inline-block;">
-                    <slot name="trackName"></slot>
-                  </div>
-                  <div class="card-text" style="font-size: 14px; color: #777">
-                    <div class="mb-3">
-                      <slot name="address"></slot>
-                    </div>
-                    <div class="mb-3">
-                      <slot name="phoneNumber"></slot>                      
-                    </div>
-                    <div style="margin-bottom: 10px;">
-                      <slot name="email"></slot>                     
-                    </div>
-                    <div class="link-container" style="display: flex; justify-content: flex-end;">
-                      <div class="mb-3 link" id="website-link">
-                        <slot name="website"></slot>
-                      </div>
-                      <div class="mb-3 link" id="fb-link">
-                        <slot name="facebook"></slot>
-                      </div>
-                    </div>
-
-                  </div>
+          <div class="card">
+            <div id="card-title" style="display: inline-block;">
+              <slot name="trackName"></slot>
+            </div>
+            <div class="card-text" style="font-size: 14px; color: #777">
+              <div class="mb-3">
+                <slot name="address"></slot>
+              </div>
+              <div class="mb-3">
+                <slot name="phoneNumber"></slot>
+              </div>
+              <div style="margin-bottom: 10px;">
+                <slot name="email"></slot>
+              </div>
+              <div class="link-container" style="display: flex; justify-content: flex-end;">
+                <div class="mb-3 link" id="website-link">
+                  <slot name="website"></slot>
                 </div>
-              </template>
+                <div class="mb-3 link" id="fb-link">
+                  <slot name="facebook"></slot>
+                </div>
+              </div>
 
-
+            </div>
           </div>
-        <div id="map"></div>
+        </template>
+
+
       </div>
+      <div id="map"></div>
+    </div>
   </div>
-  
-    
-    <script>(g => { var h, a, k, p = "The Google Maps JavaScript API", c = "google", l = "importLibrary", q = "__ib__", m = document, b = window; b = b[c] || (b[c] = {}); var d = b.maps || (b.maps = {}), r = new Set, e = new URLSearchParams, u = () => h || (h = new Promise(async (f, n) => { await (a = m.createElement("script")); e.set("libraries", [...r] + ""); for (k in g) e.set(k.replace(/[A-Z]/g, t => "_" + t[0].toLowerCase()), g[k]); e.set("callback", c + ".maps." + q); a.src = `https://maps.${c}apis.com/maps/api/js?` + e; d[q] = f; a.onerror = () => h = n(Error(p + " could not load.")); a.nonce = m.querySelector("script[nonce]")?.nonce || ""; m.head.append(a) })); d[l] ? console.warn(p + " only loads once. Ignoring:", g) : d[l] = (f, ...n) => r.add(f) && u().then(() => d[l](f, ...n)) })
-            ({ key: "AIzaSyCFs0RwWqdUsPixZ5-aALjIo3XTb8WEIcU", v: "beta" });
-    </script>
-    
-  </body>
+
+
+  <script>(g => { var h, a, k, p = "The Google Maps JavaScript API", c = "google", l = "importLibrary", q = "__ib__", m = document, b = window; b = b[c] || (b[c] = {}); var d = b.maps || (b.maps = {}), r = new Set, e = new URLSearchParams, u = () => h || (h = new Promise(async (f, n) => { await (a = m.createElement("script")); e.set("libraries", [...r] + ""); for (k in g) e.set(k.replace(/[A-Z]/g, t => "_" + t[0].toLowerCase()), g[k]); e.set("callback", c + ".maps." + q); a.src = `https://maps.${c}apis.com/maps/api/js?` + e; d[q] = f; a.onerror = () => h = n(Error(p + " could not load.")); a.nonce = m.querySelector("script[nonce]")?.nonce || ""; m.head.append(a) })); d[l] ? console.warn(p + " only loads once. Ignoring:", g) : d[l] = (f, ...n) => r.add(f) && u().then(() => d[l](f, ...n)) })
+      ({ key: "AIzaSyCFs0RwWqdUsPixZ5-aALjIo3XTb8WEIcU", v: "beta" });
+  </script>
+
+</body>
+
 </html>
