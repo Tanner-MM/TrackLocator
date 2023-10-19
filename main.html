@@ -2,29 +2,18 @@
   <head>
     <title>Track Map</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" type="text/css" href="./main.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+   
     <script src="./functions.js" defer></script>
     <script src="./maps.js" defer></script>
   </head>
   <body>
     <style>
-* {
-    margin: 0;
-    padding: 0;
-}
+
 
 #map {
     flex: 0.75;
     padding: 10px;
 }
-
-html,
-body {
-    height: 100%;
-}
-
-
 
 body {
     font-family: Arial, sans-serif;
@@ -51,6 +40,8 @@ body {
     border-radius: 5px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     margin: 8px; /* Optional: Add some margin for spacing */
+    align-items: center;
+    gap: 10px;
 }
 
 .apply-filter,
@@ -62,7 +53,6 @@ body {
     border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s ease;
-    margin-left: 1rem;
 }
 
 .apply-filter:hover,
