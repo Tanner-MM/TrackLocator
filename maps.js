@@ -19,16 +19,15 @@ async function initMap() {
         createMap(pos, 4);
     }
 
+
     await parseCsv();
-    placeMarkers();
 }
 
 
 
 
 async function main() { // entry point
-    await initMap();
-
+    
     customElements.define(
         "track-card",
         class extends HTMLElement {
@@ -39,6 +38,7 @@ async function main() { // entry point
                 shadowRoot.appendChild(template.cloneNode(true));
 
                 this._card = shadowRoot.querySelector('.card');
+                this._marker = null; // Initially null, set on card creation
                 this._websiteContainer = shadowRoot.getElementById('website-link');
                 this._facebookContainer = shadowRoot.getElementById('fb-link');
                 this._instagramContainer = shadowRoot.getElementById('ig-link');
@@ -47,6 +47,15 @@ async function main() { // entry point
             get card() {
                 return this._card;
             }
+
+            get marker() {
+                return this._marker;
+            }
+
+            set marker(marker) {
+                this._marker = marker;
+            }
+            
 
             connectedCallback() { // Fires when the element is rendered in the template
 
@@ -115,8 +124,21 @@ async function main() { // entry point
         }
     );
 
+    await initMap();
     generateCardInfoAndClickListeners(); // Creates objects to populate the card data
+
+    // const trackCards = document.querySelectorAll('track-card');
+    // google.maps.event.addListener(map, 'bounds_changed', () => {
+    //     trackCards.forEach(track => {
+    //         if(map.getBounds().contains(track.marker.getPosition())) {
+    //             track.style.display = 'block';
+    //         } else {
+    //             track.style.display = 'none';
+    //         }
+    //     });
+    // })
 }
 
 
-main();
+
+main(); // Entry point
