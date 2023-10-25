@@ -290,7 +290,7 @@ function _getZoomLevel(placeTypes) {
         'administrative_area_level_1': 6,  // State/Province level
         'administrative_area_level_2': 8,  // County level
         'administrative_area_level_3': 10,
-        'locality': 12,                    // City level
+        'locality': 10,                    // City level
         'sublocality': 14,
         'neighborhood': 15,
         'route': 16,                       // Streets in a city
@@ -301,9 +301,8 @@ function _getZoomLevel(placeTypes) {
         'park': 15,
         'point_of_interest': 16
     };
-    // Default to a mid-range zoom level
-    let zoom = 12;
-
+    
+    let zoom = 12; // Default to a mid-range zoom level
     for (let type of placeTypes) {
         if (zoomLevels[type]) {
             zoom = zoomLevels[type];
