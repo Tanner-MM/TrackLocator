@@ -17,8 +17,6 @@ let lastAppliedFilter = null;
 // let radiusSearchUrl = "https://script.google.com/macros/s/AKfycbxDyE2Ky9w5GA9B8RlBbpew5d6GscF0rjJLR39NIiVGCd3e6WSDjLQir32b818Xy5tD/exec?centerLat=YOUR_LAT&centerLng=YOUR_LNG&radius=YOUR_RADIUS";
 
 async function parseCsv() {
-
-
   await fetch('https://docs.google.com/spreadsheets/d/e/2PACX-1vRHXMq5l0JBWFM7Rohunawo0q6vFnYu24AIBBwgkaycv2LJaFAefYhNwzGMmkWvfKqYODs28EWhD6n3/pub?gid=0&single=true&output=csv', {
       headers: {
           "Cache-Control": "max-age=86400;",
@@ -41,17 +39,47 @@ async function parseCsv() {
   );
 }
 
-function placeMarkers() {
-  for(let i = 0; i < coordinates.length; i++){
-    let marker = new google.maps.Marker({
-          position: new google.maps.LatLng(coordinates[i][0], coordinates[i][1]),
-          map: map,
-          title: locations[i]
+
+function generateCardsAndPlaceMarkers() {
+    const trackContainer = document.getElementById("track-container");
+  
+    // Clear the existing child nodes of the trackContainer
+    while (trackContainer.firstChild) {
+      trackContainer.removeChild(trackContainer.firstChild);
+    }
+  
+    tracks.forEach((track, index) => {
+      // Generate track card elements
+      const trackEl = document.createElement("track-card");
+      trackEl.setAttribute('data-name', track.trackName);
+  
+      for (let [key, value] of Object.entries(track)) {
+        let propEl = document.createElement("span");
+        if (value) { // Check for missing value. If falsy, skip it.
+          propEl.setAttribute("slot", key);
+          propEl.textContent = value;
+          trackEl.appendChild(propEl);
+        }
+      }
+  
+      // Place marker on the map and link it to the track card
+      let marker = new google.maps.Marker({
+        position: new google.maps.LatLng(coordinates[index][0], coordinates[index][1]),
+        map: map,
+        title: locations[index]
       });
+    //   marker.trackCard = trackEl;
       markers.push(marker);
-      createInfoWindow(marker, i);
+  
+
+      createInfoWindow(marker, index); // Create the infowindow for each marker.
+  
+      trackContainer.appendChild(trackEl);
+
+      trackEl.marker = marker; // Binds the marker to the track card
+    });
   }
-}
+  
 
 
 function createInfoWindow(marker, index) {
@@ -84,67 +112,107 @@ function generateCardInfoAndClickListeners() {
       }
   }));
 
-  generateCards(); // Generates the info card elements
+  //generateCards(); // Generates the info card elements
+  generateCardsAndPlaceMarkers();
   createClickListeners();
 }
 
-function generateCards() {
-  const trackContainer = document.getElementById("track-container");
+// async function focusOnMarker(locationId) {
+//   for (let marker of markers) {
+//       if (marker.get('title') === locationId) {
+//           map.setCenter(marker.getPosition(), 1);
+//           marker.setAnimation(google.maps.Animation.BOUNCE);
+//           setTimeout(() => marker.setAnimation(null), 1000); // Bounce animation for 1s to indicate which is selected
 
-  while (trackContainer.firstChild) {
-      trackContainer.removeChild(trackContainer.firstChild);
-  }
+//           // Open the corresponding infoWindow
+//           if (markerInfoWindows[locationId]) {
+//               if (lastOpenedInfoWindow) {
+//                   lastOpenedInfoWindow.close();
+//               }
+//               markerInfoWindows[locationId].setContent(locations[markers.indexOf(marker)]);
+//               markerInfoWindows[locationId].open(map, marker);
+//               lastOpenedInfoWindow = markerInfoWindows[locationId];
+//           }
 
-  tracks.forEach(track => {
-      const trackEl = document.createElement("track-card");
-      trackEl.setAttribute('data-name', track.trackName);
-      for (let [key, value] of Object.entries(track)) {
-          let propEl = document.createElement("span");
-          if (!!value) { // Check for missing value. If falsy, skip it.
-              propEl.setAttribute("slot", key);
-              propEl.textContent = value;
-              trackEl.appendChild(propEl);
-          }
-      }
+//           let trackCard = document.querySelector(`track-card[data-name="${locationId}"]`);
+//           if (trackCard) {
+//               trackCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+//               if (currentHighlightedCard)
+//                   currentHighlightedCard.card.classList.remove('highlighted');
+//               trackCard.card.classList.add('highlighted');
+//               currentHighlightedCard = trackCard;
+//           }
+//       }
+//   }
+// }
 
-      trackContainer.appendChild(trackEl);
-  });
-}
+// async function focusOnMarker(locationId) {
+//     let trackCard = document.querySelector(`track-card[data-name="${locationId}"]`);
+    
+//     if (trackCard) {
+//       let marker = trackCard.marker;
+      
+//       if (marker) {
+//         map.setCenter(marker.getPosition(), 1);
+//         marker.setAnimation(google.maps.Animation.BOUNCE);
+//         setTimeout(() => marker.setAnimation(null), 1000); // Bounce animation for 1s to indicate which is selected
+  
+//         // Open the corresponding infoWindow
+//         if (markerInfoWindows[locationId]) {
+//           if (lastOpenedInfoWindow) {
+//             lastOpenedInfoWindow.close();
+//           }
+//           markerInfoWindows[locationId].setContent(locations[markers.indexOf(marker)]);
+//           markerInfoWindows[locationId].open(map, marker);
+//           lastOpenedInfoWindow = markerInfoWindows[locationId];
+//         }
+      
+//         trackCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+//         if (currentHighlightedCard)
+//           currentHighlightedCard.card.classList.remove('highlighted');
+//         trackCard.card.classList.add('highlighted');
+//         currentHighlightedCard = trackCard;
+//       }
+//     }
+//   }
 
 async function focusOnMarker(locationId) {
-  for (let marker of markers) {
-      if (marker.get('title') === locationId) {
-          map.setCenter(marker.getPosition(), 1);
-          marker.setAnimation(google.maps.Animation.BOUNCE);
-          setTimeout(() => marker.setAnimation(null), 1000); // Bounce animation for 1s to indicate which is selected
-
-          // Open the corresponding infoWindow
-          if (markerInfoWindows[locationId]) {
-              if (lastOpenedInfoWindow) {
-                  lastOpenedInfoWindow.close();
-              }
-              markerInfoWindows[locationId].setContent(locations[markers.indexOf(marker)]);
-              markerInfoWindows[locationId].open(map, marker);
-              lastOpenedInfoWindow = markerInfoWindows[locationId];
-          }
-
-          let trackCard = document.querySelector(`track-card[data-name="${locationId}"]`);
-          if (trackCard) {
-              trackCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
-              if (currentHighlightedCard)
-                  currentHighlightedCard.card.classList.remove('highlighted');
-              trackCard.card.classList.add('highlighted');
-              currentHighlightedCard = trackCard;
-          }
+    let trackCard = document.querySelector(`track-card[data-name="${locationId}"]`);
+    
+    if (trackCard && trackCard.marker) {
+      let marker = trackCard.marker;
+  
+      map.setCenter(marker.getPosition(), 1);
+      marker.setAnimation(google.maps.Animation.BOUNCE);
+      setTimeout(() => marker.setAnimation(null), 1000); // Bounce animation for 1s to indicate which is selected
+  
+      // Open the corresponding infoWindow
+      if (markerInfoWindows[locationId]) {
+        if (lastOpenedInfoWindow) {
+          lastOpenedInfoWindow.close();
+        }
+        markerInfoWindows[locationId].setContent(marker.get('title'));
+        markerInfoWindows[locationId].open(map, marker);
+        lastOpenedInfoWindow = markerInfoWindows[locationId];
       }
+      
+      trackCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      if (currentHighlightedCard) {
+        currentHighlightedCard.card.classList.remove('highlighted');
+      }
+      trackCard.card.classList.add('highlighted');
+      currentHighlightedCard = trackCard;
+    }
   }
-}
+  
+  
 
 function createClickListeners() {
   document.querySelectorAll('track-card').forEach(card => {
       card.addEventListener('click', function () {
           let locationId = card.getAttribute('data-name');
           focusOnMarker(locationId);
+        // map.setCenter(card.marker.getPosition(), 1);
       });
   });
 
@@ -225,3 +293,55 @@ function getUserLocation() {
       }
   });
 }
+
+
+// function placeMarkers() {
+//   for(let i = 0; i < coordinates.length; i++){
+//     let marker = new google.maps.Marker({
+//           position: new google.maps.LatLng(coordinates[i][0], coordinates[i][1]),
+//           map: map,
+//           title: locations[i]
+//       });
+//       markers.push(marker);
+//       createInfoWindow(marker, i);
+//   }
+// }
+// function generateCards() {
+//     const trackContainer = document.getElementById("track-container");
+  
+//     while (trackContainer.firstChild) {
+//         trackContainer.removeChild(trackContainer.firstChild);
+//     }
+  
+//     tracks.forEach(track => {
+//         const trackEl = document.createElement("track-card");
+//         trackEl.setAttribute('data-name', track.trackName);
+//         for (let [key, value] of Object.entries(track)) {
+//             let propEl = document.createElement("span");
+//             if (!!value) { // Check for missing value. If falsy, skip it.
+//                 propEl.setAttribute("slot", key);
+//                 propEl.textContent = value;
+//                 trackEl.appendChild(propEl);
+//             }
+//         }
+//         trackEl.marker = createMarker()
+  
+//         trackContainer.appendChild(trackEl);
+//     });
+//   }
+// function createMarker({ lat, lng }) {
+//     if (!lat || !lng) {
+//         throw new Error("Latitude and Longitude are required to create a marker.");
+//     }
+
+//     if (!map || !(map instanceof google.maps.Map)) {
+//         throw new Error("A valid Google Maps instance is required to create a marker.");
+//     }
+
+//     const marker = new google.maps.Marker({
+//         position: { lat, lng },
+//         map: map
+//     });
+
+//     return marker;
+// }
