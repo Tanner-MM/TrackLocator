@@ -24,8 +24,6 @@ async function initMap() {
 }
 
 
-
-
 async function main() { // entry point
     
     customElements.define(
@@ -127,18 +125,21 @@ async function main() { // entry point
     await initMap();
     generateCardInfoAndClickListeners(); // Creates objects to populate the card data
 
-    // const trackCards = document.querySelectorAll('track-card');
-    // google.maps.event.addListener(map, 'bounds_changed', () => {
-    //     trackCards.forEach(track => {
-    //         if(map.getBounds().contains(track.marker.getPosition())) {
-    //             track.style.display = 'block';
-    //         } else {
-    //             track.style.display = 'none';
-    //         }
-    //     });
-    // })
+    const trackCards = document.querySelectorAll('track-card');
+    google.maps.event.addListener(map, 'bounds_changed', () => {
+        trackCards.forEach(track => {
+            if(map.getBounds().contains(track.marker.getPosition())) {
+                track.style.display = 'block';
+            } else {
+                track.style.display = 'none';
+            }
+        });
+    });
+
 }
 
+createDocumentListeners();
 
 
 main(); // Entry point
+
