@@ -93,10 +93,13 @@
       position: relative;
       display: inline-block;
     }
-    #location-search {
+    #autocomplete {
       width: 100%;
       box-sizing: border-box;
-      padding-right: 30px;
+      border: 1px solid gray;
+      border-radius: 5px;
+      padding: 5px;
+      padding-right: 35px;
     }
 
     .reset-button {
@@ -114,6 +117,19 @@
     .reset-button:focus {
       outline: none;
     }
+
+  .reset-map-button {
+      padding: 6px 12px;
+      background-color: #f2f2f2;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: .75rem;
+  }
+
+  .reset-map-button:hover {
+      background-color: #e6e6e6;
+  }
 
     @media (max-width: 768px) {
       .filter-section>select {
@@ -169,9 +185,13 @@
   <div class="container">
     <div class="filter-section">
       <div class="input-container">
-        <input id="location-search" type="text" placeholder="Enter a location">
+        <input id="autocomplete" type="text" placeholder="Enter a location">
         <button id="resetButton" class="reset-button" style="display: none;">&times;</button>
       </div>
+      <button id="resetMapButton" class="reset-map-button">Reset Zoom</button>
+
+
+
 
     </div>
 
