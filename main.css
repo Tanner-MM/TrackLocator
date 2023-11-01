@@ -1,19 +1,7 @@
-* {
-    margin: 0;
-    padding: 0;
-}
-
 #map {
     flex: 0.75;
     padding: 10px;
 }
-
-html,
-body {
-    height: 100%;
-}
-
-
 
 body {
     font-family: Arial, sans-serif;
@@ -23,6 +11,7 @@ body {
     height: 100vh;
     margin: 0;
 }
+
 .container {
     display: flex;
     flex-direction: column;
@@ -30,6 +19,7 @@ body {
     height: 80%;
     border: 1px solid #ccc;
     border-radius: 1%;
+    background-color: #49759fff;
 }
 
 .filter-section {
@@ -38,25 +28,9 @@ body {
     border: 1px solid #ccc;
     background-color: #ffffff;
     border-radius: 5px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    margin: 8px; /* Optional: Add some margin for spacing */
-}
-
-.apply-filter,
-.remove-filter {
-    padding: 7px 10px;
-    background-color: #007BFF;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    margin-left: 1rem;
-}
-
-.apply-filter:hover,
-.remove-filter:hover {
-    background-color: #0056b3;
+    margin: 8px;
+    align-items: center;
+    gap: 10px;
 }
 
 .main-content {
@@ -67,6 +41,7 @@ body {
     background-color: #49759fff;
 
 }
+
 .info-cards {
     flex: 0.25;
     overflow-y: scroll;
@@ -86,20 +61,65 @@ body {
     display: none;
 }
 
+.input-container {
+    display: inline-block;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
 
+#autocomplete {
+    width: 120%;
+    box-sizing: border-box;
+    border: 1px solid gray;
+    border-radius: 5px;
+    padding: 5px;
+    padding-right: 35px;
+}
+
+.buttonContainer {display: flex; gap: 10px;}
+
+#resetMapButton,
+#locationButton {
+    
+    padding: 7px 10px;
+    background-color: #007BFF;
+    color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    font-size: .75rem;
+}
+
+#resetButton {
+    position: absolute;
+    right: 5px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: transparent;
+    border: none;
+    font-size: 1.2em;
+    cursor: pointer;
+    z-index: 10;
+}
+
+#resetButton:focus {
+    outline: none;
+}
+
+#resetMapButton:hover,
+#locationButton:hover {
+    background-color: #0056b3;
+}
 
 
 @media (max-width: 768px) {
-    
-    .filter-section > select {
-        justify-content: center; /* Center the filter options on smaller screens */
-        width: 100%; /* Take up the full width */
+    .filter-section>select {
+        justify-content: center;
+        width: 100%;
     }
 
-    .filter-section button {
-        width: 100%; /* Make the button take up the full width */
-        margin-top: 10px; /* Add some margin to the top of the button */
-    }
     .main-content {
         flex-direction: column;
     }
@@ -117,9 +137,9 @@ body {
         flex: none;
         height: 100%;
     }
+
     .filter-section {
         flex-direction: row;
-        justify-content: space-between;
         align-items: center;
     }
 
@@ -127,6 +147,48 @@ body {
     .filter-section select,
     .filter-section button {
         margin-bottom: 0;
-        margin-right: 10px; 
+        margin-right: 10px;
+    }
+}
+
+/* Media query for smaller screens */
+@media screen and (max-width: 600px) {
+    .filter-section {
+        /* Stack elements vertically on small screens */
+        flex-direction: column;
+        align-items: stretch; /* Stretch items to fill the width */
+    }
+
+    #resetMapButton,
+    #locationButton {
+        width: 100%;
+    }
+    .button-container {
+        flex-direction: row;
+        gap: 10px; /* Maintain gap between buttons */
+    }
+}
+
+
+@media (max-width: 480px) {
+    .search-container {
+        /* Adjust styles for mobile screens. For example, increase the size of the input for better usability. */
+        font-size: 1.2rem;
+    }
+
+  
+}
+
+@media (max-width: 376px) {
+    .buttonContainer {
+        flex-direction: row;
+    }
+
+    #resetMapButton {
+        margin-right: 5px;
+    }
+
+    #locationButton {
+        margin-left: 5px;
     }
 }
