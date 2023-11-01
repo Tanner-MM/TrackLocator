@@ -36,6 +36,12 @@ async function main() { // Entry point
         });
         noResultsMessage.style.display = isVisible ? 'none' : 'block';
     });
+
+    google.maps.event.addListener(map, 'click', function() {
+        if (lastOpenedInfoWindow) {
+            lastOpenedInfoWindow.close();
+        }
+    });
 }
 
 
