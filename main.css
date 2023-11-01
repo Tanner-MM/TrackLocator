@@ -62,14 +62,14 @@ body {
 }
 
 .input-container {
-    display: inline-block;
     display: flex;
     align-items: center;
-    gap: 10px;
+    width: 35%;
+    position: relative;
 }
 
 #autocomplete {
-    width: 120%;
+    width: 100%;
     box-sizing: border-box;
     border: 1px solid gray;
     border-radius: 5px;
@@ -81,7 +81,6 @@ body {
 
 #resetMapButton,
 #locationButton {
-    
     padding: 7px 10px;
     background-color: #007BFF;
     color: #fff;
@@ -94,7 +93,7 @@ body {
 
 #resetButton {
     position: absolute;
-    right: 5px;
+    right: 5px; /* Adjust the positioning as needed */
     top: 50%;
     transform: translateY(-50%);
     background: transparent;
@@ -111,6 +110,28 @@ body {
 #resetMapButton:hover,
 #locationButton:hover {
     background-color: #0056b3;
+}
+
+.info-window-buttons {
+    position: absolute;
+    bottom: 10px;
+    right: 8px;
+
+
+}
+.info-button {
+    margin: 2px 4px;
+    padding: 3px;
+    text-decoration: none;
+}
+.trackLink {
+    text-decoration: none;
+    cursor: pointer;
+    color: black;
+}
+
+.trackLink:hover {
+    text-decoration: underline;
 }
 
 
@@ -175,8 +196,6 @@ body {
         /* Adjust styles for mobile screens. For example, increase the size of the input for better usability. */
         font-size: 1.2rem;
     }
-
-  
 }
 
 @media (max-width: 376px) {
