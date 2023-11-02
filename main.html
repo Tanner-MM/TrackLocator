@@ -79,9 +79,45 @@
             }
 
 
-            #fb-link {
-              fill: #0a66ff;
+            #fb-link { fill: #0a66ff; }
+
+            #emailPopup {
+              position: fixed;
+              border: 1px solid #ccc;
+              background-color: #fff;
+              padding: 10px;
+              border-radius: 5px;
+              box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+              z-index: 100;
+              width: 40%;
+              height: 30%;
             }
+            .link-container {
+              display: flex;
+              justify-content: flex-end;
+              align-items: center;
+            }
+            .email-container {
+              justify-content: flex-start;
+              margin-right: auto;
+              left: 0;
+            }
+            [data-title]:hover:after { visibility: visible; }
+
+            [data-title]:after {
+              content: attr(data-title);
+              visibility: hidden;
+              position: absolute;
+              background-color: white;
+              text-decoration: none;
+              padding: 5px 8px;
+              bottom: 100%;
+              left: 50%;
+              transform: translate(-50%, -50%);
+              color: black;
+            }
+            [data-title] { position: relative; }
+
           </style>
 
           <div class="card">
@@ -92,13 +128,13 @@
               <div class="mb-3">
                 <slot name="address"></slot>
               </div>
-              <div class="mb-3">
+              <div style="margin-bottom: 10px;">
                 <slot name="phoneNumber"></slot>
               </div>
-              <div style="margin-bottom: 10px;">
-                <slot name="email"></slot>
-              </div>
-              <div class="link-container" style="display: flex; justify-content: flex-end;">
+              <div class="link-container">
+                <div id="emailContainer" class="mb-3 link">
+                  <slot name="email"></slot>
+                </div>
                 <div class="mb-3 link" id="ig-link">
                   <slot name="instagram"></slot>
                 </div>
@@ -109,7 +145,6 @@
                   <slot name="website"></slot>
                 </div>
               </div>
-
             </div>
           </div>
         </template>
