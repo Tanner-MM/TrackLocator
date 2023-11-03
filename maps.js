@@ -6,13 +6,18 @@ async function initMap() {
             center: pos,
             mapId: "Track-Map",
             zoom: zoom,
+            styles: [
+                {
+                    featureType: "poi",
+                    stylers: [{ visibility: "off" }]
+                }
+            ]
         });
-    }
+    };
 
     createMap(defaultPos, 10);
-
     await parseCsv();
-}
+};
 
 async function main() { // Entry point
 
@@ -42,8 +47,7 @@ async function main() { // Entry point
             lastOpenedInfoWindow.close();
         }
     });
-}
-
+};
 
 main(); // Entry point
 
