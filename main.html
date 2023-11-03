@@ -3,10 +3,9 @@
 <head>
   <title>Track Map</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="./main.css">
-
-  <script src="./functions.js" defer></script>
-  <script src="./maps.js" defer></script>
+  <link rel="stylesheet" href="main.css">
+  <script src="functions.js" defer></script>
+  <script src="maps.js" defer></script>
 </head>
 
 <body>
@@ -23,12 +22,14 @@
       <div class="buttonContainer">
         <button id="resetMapButton">Reset Zoom</button>
         <button id="locationButton">Use My Location</button>
+        <div class="loader" id="loader" style="display: none;"></div>
       </div>
     </div>
 
     <div class="main-content">
       <div class="info-cards">
-        <div id="no-results-message" style="display: none; color: white; padding: 2px;">There are no locations found within that radius. Please try
+        <div id="no-results-message" style="display: none; color: white; padding: 2px;">There are no locations found
+          within that radius. Please try
           another search.</div>
 
         <div id="track-container"></div>
@@ -65,7 +66,9 @@
               cursor: pointer;
             }
 
-            .mb-3 {margin-bottom: 3px;}
+            .mb-3 {
+              margin-bottom: 3px;
+            }
 
             .highlighted {
               border: 2px solid #49759fff;
@@ -79,7 +82,9 @@
             }
 
 
-            #fb-link { fill: #0a66ff; }
+            #fb-link {
+              fill: #0a66ff;
+            }
 
             #emailPopup {
               position: fixed;
@@ -92,17 +97,22 @@
               width: 40%;
               height: 30%;
             }
+
             .link-container {
               display: flex;
               justify-content: flex-end;
               align-items: center;
             }
+
             .email-container {
               justify-content: flex-start;
               margin-right: auto;
               left: 0;
             }
-            [data-title]:hover:after { visibility: visible; }
+
+            [data-title]:hover:after {
+              visibility: visible;
+            }
 
             [data-title]:after {
               content: attr(data-title);
@@ -116,8 +126,10 @@
               transform: translate(-50%, -50%);
               color: black;
             }
-            [data-title] { position: relative; }
 
+            [data-title] {
+              position: relative;
+            }
           </style>
 
           <div class="card">
@@ -160,27 +172,10 @@
   </script>
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCFs0RwWqdUsPixZ5-aALjIo3XTb8WEIcU&libraries=places"></script>
 
-  <!-- <script>
-    (g => {
-      var h, a, k, p = "The Google Maps JavaScript API", c = "google", l = "importLibrary", q = "__ib__", m = document, b = window;
-      b = b[c] || (b[c] = {});
-      var d = b.maps || (b.maps = {}), r = new Set(["places"]), e = new URLSearchParams, u = () => h || (h = new Promise(async (f, n) => {
-        await (a = m.createElement("script"));
-        e.set("libraries", [...r].join(',')); // Include 'places' in the libraries parameter
-        for (k in g) e.set(k.replace(/[A-Z]/g, t => "_" + t[0].toLowerCase()), g[k]);
-        e.set("callback", c + ".maps." + q);
-        a.src = `https://maps.${c}apis.com/maps/api/js?` + e;
-        d[q] = f;
-        a.onerror = () => h = n(Error(p + " could not load."));
-        a.nonce = m.querySelector("script[nonce]")?.nonce || "";
-        m.head.append(a)
-      }));
-      d[l] ? console.warn(p + " only loads once. Ignoring:", g) : d[l] = (f, ...n) => r.add(f) && u().then(() => d[l](f, ...n))
-    })({ key: "AIzaSyCFs0RwWqdUsPixZ5-aALjIo3XTb8WEIcU", v: "beta" });
-  </script> -->
-  
+  <script>
 
-
+    
+  </script>
 </body>
 
 </html>

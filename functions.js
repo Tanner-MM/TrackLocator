@@ -1,3 +1,7 @@
+const instaSVG = '<svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 448 512"><path d="M224.1 141c-63.6 0-114.9 51.3-114.9 114.9s51.3 114.9 114.9 114.9S339 319.5 339 255.9 287.7 141 224.1 141zm0 189.6c-41.1 0-74.7-33.5-74.7-74.7s33.5-74.7 74.7-74.7 74.7 33.5 74.7 74.7-33.6 74.7-74.7 74.7zm146.4-194.3c0 14.9-12 26.8-26.8 26.8-14.9 0-26.8-12-26.8-26.8s12-26.8 26.8-26.8 26.8 12 26.8 26.8zm76.1 27.2c-1.7-35.9-9.9-67.7-36.2-93.9-26.2-26.2-58-34.4-93.9-36.2-37-2.1-147.9-2.1-184.9 0-35.8 1.7-67.6 9.9-93.9 36.1s-34.4 58-36.2 93.9c-2.1 37-2.1 147.9 0 184.9 1.7 35.9 9.9 67.7 36.2 93.9s58 34.4 93.9 36.2c37 2.1 147.9 2.1 184.9 0 35.9-1.7 67.7-9.9 93.9-36.2 26.2-26.2 34.4-58 36.2-93.9 2.1-37 2.1-147.8 0-184.8zM398.8 388c-7.8 19.6-22.9 34.7-42.6 42.6-29.5 11.7-99.5 9-132.1 9s-102.7 2.6-132.1-9c-19.6-7.8-34.7-22.9-42.6-42.6-11.7-29.5-9-99.5-9-132.1s-2.6-102.7 9-132.1c7.8-19.6 22.9-34.7 42.6-42.6 29.5-11.7 99.5-9 132.1-9s102.7-2.6 132.1 9c19.6 7.8 34.7 22.9 42.6 42.6 11.7 29.5 9 99.5 9 132.1s2.7 102.7-9 132.1z"/></svg>';
+const fbSVG = '<svg xmlns="http://www.w3.org/2000/svg" height="1.25em" viewBox="0 0 512 512"><path d="M504 256C504 119 393 8 256 8S8 119 8 256c0 123.78 90.69 226.38 209.25 245V327.69h-63V256h63v-54.64c0-62.15 37-96.48 93.67-96.48 27.14 0 55.52 4.84 55.52 4.84v61h-31.28c-30.8 0-40.41 19.12-40.41 38.73V256h68.78l-11 71.69h-57.78V501C413.31 482.38 504 379.78 504 256z"/></svg>';
+const siteSVG = '<svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 640 512"><path d="M579.8 267.7c56.5-56.5 56.5-148 0-204.5c-50-50-128.8-56.5-186.3-15.4l-1.6 1.1c-14.4 10.3-17.7 30.3-7.4 44.6s30.3 17.7 44.6 7.4l1.6-1.1c32.1-22.9 76-19.3 103.8 8.6c31.5 31.5 31.5 82.5 0 114L422.3 334.8c-31.5 31.5-82.5 31.5-114 0c-27.9-27.9-31.5-71.8-8.6-103.8l1.1-1.6c10.3-14.4 6.9-34.4-7.4-44.6s-34.4-6.9-44.6 7.4l-1.1 1.6C206.5 251.2 213 330 263 380c56.5 56.5 148 56.5 204.5 0L579.8 267.7zM60.2 244.3c-56.5 56.5-56.5 148 0 204.5c50 50 128.8 56.5 186.3 15.4l1.6-1.1c14.4-10.3 17.7-30.3 7.4-44.6s-30.3-17.7-44.6-7.4l-1.6 1.1c-32.1 22.9-76 19.3-103.8-8.6C74 372 74 321 105.5 289.5L217.7 177.2c31.5-31.5 82.5-31.5 114 0c27.9 27.9 31.5 71.8 8.6 103.9l-1.1 1.6c-10.3 14.4-6.9 34.4 7.4 44.6s34.4 6.9 44.6-7.4l1.1-1.6C433.5 260.8 427 182 377 132c-56.5-56.5-148-56.5-204.5 0L60.2 244.3z"/></svg>';
+
 let map;
 let coordinates = []; // Holds a list of all coordinate pairs for each track
 let locations = []; // List of all track names
@@ -9,11 +13,8 @@ const defaultPos = { lat: 39.84181336054336, lng: -99.90822182318774 };
 
 let currentHighlightedCard = null;
 let lastOpenedInfoWindow = null;
-const instaSVG = '<svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 448 512"><path d="M224.1 141c-63.6 0-114.9 51.3-114.9 114.9s51.3 114.9 114.9 114.9S339 319.5 339 255.9 287.7 141 224.1 141zm0 189.6c-41.1 0-74.7-33.5-74.7-74.7s33.5-74.7 74.7-74.7 74.7 33.5 74.7 74.7-33.6 74.7-74.7 74.7zm146.4-194.3c0 14.9-12 26.8-26.8 26.8-14.9 0-26.8-12-26.8-26.8s12-26.8 26.8-26.8 26.8 12 26.8 26.8zm76.1 27.2c-1.7-35.9-9.9-67.7-36.2-93.9-26.2-26.2-58-34.4-93.9-36.2-37-2.1-147.9-2.1-184.9 0-35.8 1.7-67.6 9.9-93.9 36.1s-34.4 58-36.2 93.9c-2.1 37-2.1 147.9 0 184.9 1.7 35.9 9.9 67.7 36.2 93.9s58 34.4 93.9 36.2c37 2.1 147.9 2.1 184.9 0 35.9-1.7 67.7-9.9 93.9-36.2 26.2-26.2 34.4-58 36.2-93.9 2.1-37 2.1-147.8 0-184.8zM398.8 388c-7.8 19.6-22.9 34.7-42.6 42.6-29.5 11.7-99.5 9-132.1 9s-102.7 2.6-132.1-9c-19.6-7.8-34.7-22.9-42.6-42.6-11.7-29.5-9-99.5-9-132.1s-2.6-102.7 9-132.1c7.8-19.6 22.9-34.7 42.6-42.6 29.5-11.7 99.5-9 132.1-9s102.7-2.6 132.1 9c19.6 7.8 34.7 22.9 42.6 42.6 11.7 29.5 9 99.5 9 132.1s2.7 102.7-9 132.1z"/></svg>';
-const fbSVG = '<svg xmlns="http://www.w3.org/2000/svg" height="1.25em" viewBox="0 0 512 512"><path d="M504 256C504 119 393 8 256 8S8 119 8 256c0 123.78 90.69 226.38 209.25 245V327.69h-63V256h63v-54.64c0-62.15 37-96.48 93.67-96.48 27.14 0 55.52 4.84 55.52 4.84v61h-31.28c-30.8 0-40.41 19.12-40.41 38.73V256h68.78l-11 71.69h-57.78V501C413.31 482.38 504 379.78 504 256z"/></svg>';
-const siteSVG = '<svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 640 512"><path d="M579.8 267.7c56.5-56.5 56.5-148 0-204.5c-50-50-128.8-56.5-186.3-15.4l-1.6 1.1c-14.4 10.3-17.7 30.3-7.4 44.6s30.3 17.7 44.6 7.4l1.6-1.1c32.1-22.9 76-19.3 103.8 8.6c31.5 31.5 31.5 82.5 0 114L422.3 334.8c-31.5 31.5-82.5 31.5-114 0c-27.9-27.9-31.5-71.8-8.6-103.8l1.1-1.6c10.3-14.4 6.9-34.4-7.4-44.6s-34.4-6.9-44.6 7.4l-1.1 1.6C206.5 251.2 213 330 263 380c56.5 56.5 148 56.5 204.5 0L579.8 267.7zM60.2 244.3c-56.5 56.5-56.5 148 0 204.5c50 50 128.8 56.5 186.3 15.4l1.6-1.1c14.4-10.3 17.7-30.3 7.4-44.6s-30.3-17.7-44.6-7.4l-1.6 1.1c-32.1 22.9-76 19.3-103.8-8.6C74 372 74 321 105.5 289.5L217.7 177.2c31.5-31.5 82.5-31.5 114 0c27.9 27.9 31.5 71.8 8.6 103.9l-1.1 1.6c-10.3 14.4-6.9 34.4 7.4 44.6s34.4 6.9 44.6-7.4l1.1-1.6C433.5 260.8 427 182 377 132c-56.5-56.5-148-56.5-204.5 0L60.2 244.3z"/></svg>';
-
-
+let cachedLocation = null;
+const MAX_CACHE_AGE = 300000;
 
 
 // Radius search function that gives a list of all entries within the center radius
@@ -100,11 +101,11 @@ function updateInfoWindowContent(marker, track) {
         <a href="${track.website}" class="trackLink" title="Visit Website" target="_blank"><h3>${track.trackName}</h3></a>
         <p>${track.address}</p>
         <p>${track.phoneNumber}</p>
-
-        <div class="info-window-buttons">
-            ${links}
+        <div class="link-container">
+            <div class="info-window-buttons">
+                ${links}
+            </div>
         </div>
-        
     `;
     infoWindow.setContent(contentString);
     infoWindow.open(map, marker);
@@ -149,7 +150,7 @@ async function focusOnMarker(locationId) {
         }
         trackCard.card.classList.add('highlighted');
         currentHighlightedCard = trackCard;
-    }
+    };
 };
 
 
@@ -167,36 +168,26 @@ function createClickListeners() {
             let locationId = marker.get('title');
             focusOnMarker(locationId);
         });
-    }
+    };
 };
-
-// function createClickListeners() {
-//     document.querySelectorAll('track-card').forEach(card => {
-//         card.addEventListener('click', function () {
-//             let locationId = card.getAttribute('data-name');
-//             focusOnMarker(locationId);
-//             // map.setCenter(card.marker.getPosition(), 1);
-//         });
-//     });
-
-//     // Add click event listeners to markers
-//     for (let marker of markers) {
-//         marker.addListener('click', function () {
-//             let locationId = marker.get('title');
-//             focusOnMarker(locationId);
-//         });
-//         markerInfoWindows[marker.get('title')] = infoWindow;
-//     }
-// }
 
 function getUserLocation() {
     return new Promise((resolve, reject) => {
+        // Check if we have cached location data and it's recent enough
+        const currentTime = new Date().getTime();
+        if (cachedLocation && (currentTime - cachedLocation.timestamp) < MAX_CACHE_AGE) {
+            resolve(cachedLocation); // Resolve with cached data
+            return;
+        }
+
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(position => {
-                resolve({
+                cachedLocation = {
                     lat: position.coords.latitude,
-                    lng: position.coords.longitude
-                });
+                    lng: position.coords.longitude,
+                    timestamp: currentTime
+                };
+                resolve(cachedLocation);
             }, error => {
                 reject(error);
             });
@@ -226,7 +217,13 @@ function createDocumentListeners() {
     document.addEventListener('DOMContentLoaded', function () {
         map = new google.maps.Map(document.getElementById('map'), {
             center: defaultPos, // Default coordinates
-            zoom: 4 // Defualt zoom
+            zoom: 4, // Defualt zoom
+            styles: [
+                {
+                    featureType: "poi",
+                    stylers: [{ visibility: "off" }]
+                }
+            ]
         });
 
         // Initialize the Autocomplete functionality
@@ -263,16 +260,27 @@ function createDocumentListeners() {
         infoWindow.close();
     });
 
-    document.getElementById('locationButton').addEventListener('click', async () => {
-        try {
+    // TODO start here to cache first user location request
+    const userLocationButton = document.getElementById('locationButton');
+    userLocationButton.addEventListener('click', async () => {
+        try { // Show loader and fetching text
+            document.getElementById('loader').style.display = 'block';
+            userLocationButton.textContent = "Fetching Location...";
+            userLocationButton.disabled = true;
             const pos = await getUserLocation();
             map.setCenter(pos);
             map.setZoom(12);
+            userLocationButton.textContent = 'Use My Location';
+            userLocationButton.disabled = false;
         } catch (error) {
-            console.error("Error fetching user's location:", error.message);
+            console.error("Error fetching user's location:", error);
+            userLocationButton.textContent = "Location Denied";
+            userLocationButton.disabled = true;
             map.setCenter(defaultPos);
             map.setZoom(4);
         }
+
+        document.getElementById('loader').style.display = 'none';
     });
 }
 
