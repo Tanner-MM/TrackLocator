@@ -1,29 +1,8 @@
-async function initMap() {
-    const { Map } = await google.maps.importLibrary("maps");
-
-    createMap = (pos, zoom = 4) => {
-        map = new Map(document.getElementById("map"), {
-            center: pos,
-            mapId: "Track-Map",
-            zoom: zoom,
-            styles: [
-                {
-                    featureType: "poi",
-                    stylers: [{ visibility: "off" }]
-                }
-            ]
-        });
-    };
-
-    createMap(defaultPos, 10);
-    await parseCsv();
-};
-
 async function main() { // Entry point
 
     createDocumentListeners();
     defineCustomElements();
-    await initMap();
+    await parseCsv();
     generateCardInfoAndClickListeners(); // Creates objects to populate the card data
 
     const noResultsMessage = document.getElementById("no-results-message");
