@@ -21,11 +21,7 @@ const MAX_CACHE_AGE = 300000;
 // let radiusSearchUrl = "https://script.google.com/macros/s/AKfycbxDyE2Ky9w5GA9B8RlBbpew5d6GscF0rjJLR39NIiVGCd3e6WSDjLQir32b818Xy5tD/exec?centerLat=YOUR_LAT&centerLng=YOUR_LNG&radius=YOUR_RADIUS";
 
 async function parseCsv() {
-    await fetch('https://docs.google.com/spreadsheets/d/e/2PACX-1vRHXMq5l0JBWFM7Rohunawo0q6vFnYu24AIBBwgkaycv2LJaFAefYhNwzGMmkWvfKqYODs28EWhD6n3/pub?gid=0&single=true&output=csv', {
-        headers: {
-            "Cache-Control": "max-age=86400;",
-        }
-    })
+    await fetch('https://docs.google.com/spreadsheets/d/e/2PACX-1vRHXMq5l0JBWFM7Rohunawo0q6vFnYu24AIBBwgkaycv2LJaFAefYhNwzGMmkWvfKqYODs28EWhD6n3/pub?gid=0&single=true&output=csv')
         .then(res => res.text())
         .then(data => {
             let rows = data.split('\n').map(row => row.trim()).filter(row => row.length); // Splits each row into its own element, trims whitespace, and filters any empty rows
@@ -46,18 +42,13 @@ async function parseCsv() {
 function generateCardsAndPlaceMarkers() {
     const trackContainer = document.getElementById("track-container");
 
-    // Clear the existing child nodes of the trackContainer
-    while (trackContainer.firstChild) {
-        trackContainer.removeChild(trackContainer.firstChild);
-    }
-
     tracks.forEach((track, index) => {
         // Generate track card elements
         const trackEl = document.createElement("track-card");
         trackEl.setAttribute('data-name', track.trackName);
 
         for (let [key, value] of Object.entries(track)) {
-            let propEl = document.createElement("span");
+            let propEl = document.createElement("p");
             if (value) { // Check for missing value. If falsy, skip it.
                 propEl.setAttribute("slot", key);
                 propEl.textContent = value;
@@ -74,47 +65,20 @@ function generateCardsAndPlaceMarkers() {
         //   marker.trackCard = trackEl; // Creates a custom property on the marker to link it its corresponding track card
         markers.push(marker);
 
-        marker.addListener('click', () => {
-            updateInfoWindowContent(marker, track);
-        })
-
-        // createInfoWindow(marker, index); // Create the infoWindow for each marker.
-        trackContainer.appendChild(trackEl);
         trackEl.marker = marker; // Binds the marker to the track card
+        trackContainer.appendChild(trackEl);
+
+        trackEl.addEventListener('click', function () {
+            focusOnMarker(marker, trackEl);
+        });
+        marker.addEventListener('click', function () {
+            focusOnMarker(marker, trackEl);
+        });
     });
-};
-
-function updateInfoWindowContent(marker, track) {
-    if (lastOpenedInfoWindow) lastOpenedInfoWindow.close();
-
-    let links = '';
-
-    if(track.instagram)
-        links += `<a href="${track.instagram}" style="" class="info-button" title="Visit Instagram Page" target="_blank">${instaSVG}</a>`;
-    if(track.facebook)
-        links += `<a href="${track.facebook}" style="fill: #0a66ff;" class="info-button" title="Visit Facebook Page" target="_blank">${fbSVG}</a>`;
-    if(track.website)
-        links += `<a href="${track.website}" class="info-button" title="Visit Website" target="_blank">${siteSVG}</a>`;
-
-
-    const contentString = `
-        <a href="${track.website}" class="trackLink" title="Visit Website" target="_blank"><h3>${track.trackName}</h3></a>
-        <p>${track.address}</p>
-        <p>${track.phoneNumber}</p>
-        <div class="link-container">
-            <div class="info-window-buttons">
-                ${links}
-            </div>
-        </div>
-    `;
-    infoWindow.setContent(contentString);
-    infoWindow.open(map, marker);
-    lastOpenedInfoWindow = infoWindow;
 };
 
 function generateCardInfoAndClickListeners() {
     tracks = parsedData.map((row, i) => ({
-        id: i.toString(),
         trackName: row[0],
         address: row[6],
         email: row[10],
@@ -131,52 +95,30 @@ function generateCardInfoAndClickListeners() {
     createClickListeners();
 };
 
-async function focusOnMarker(locationId) {
-    let trackCard = document.querySelector(`track-card[data-name="${locationId}"]`);
+async function focusOnMarker(marker, trackEl) {
+    map.setCenter(marker.getPosition(), 13);
+    marker.setAnimation(google.maps.Animation.BOUNCE);
+    setTimeout(() => marker.setAnimation(null), 1000);
 
-    if (trackCard && trackCard.marker) {
-        let marker = trackCard.marker;
+    let clone = trackEl.cloneNode(true);
+    infoWindow.setContent(clone);
+    infoWindow.open(map, marker);
+    lastOpenedInfoWindow = infoWindow;
 
-        map.setCenter(marker.getPosition(), 13);
-        marker.setAnimation(google.maps.Animation.BOUNCE);
-        setTimeout(() => marker.setAnimation(null), 1000); // Bounce animation for 1s to indicate which is selected
-
-        let track = tracks.find(t => t.trackName === locationId);
-        if (track) updateInfoWindowContent(marker, track);
-
-        trackCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        if (currentHighlightedCard) {
-            currentHighlightedCard.card.classList.remove('highlighted');
-        }
-        trackCard.card.classList.add('highlighted');
-        currentHighlightedCard = trackCard;
-    };
+    trackEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    if (currentHighlightedCard) {
+        currentHighlightedCard.card.classList.remove('highlighted');
+    }
+    trackEl.card.classList.add('highlighted');
+    currentHighlightedCard = trackEl;
 };
 
-
-function createClickListeners() {
-    document.querySelectorAll('track-card').forEach(card => {
-        card.addEventListener('click', function () {
-            let locationId = card.getAttribute('data-name');
-            focusOnMarker(locationId);
-        });
-    });
-
-    // Add click event listeners to markers
-    for (let marker of markers) {
-        marker.addListener('click', function () {
-            let locationId = marker.get('title');
-            focusOnMarker(locationId);
-        });
-    };
-};
 
 function getUserLocation() {
     return new Promise((resolve, reject) => {
-        // Check if we have cached location data and it's recent enough
         const currentTime = new Date().getTime();
         if (cachedLocation && (currentTime - cachedLocation.timestamp) < MAX_CACHE_AGE) {
-            resolve(cachedLocation); // Resolve with cached data
+            resolve(cachedLocation);
             return;
         }
 
@@ -232,8 +174,6 @@ function createDocumentListeners() {
             { types: ['geocode'] }
         );
 
-        // Bind the map's bounds (viewport) property to the autocomplete object,
-        // so the autocomplete's boundary is automatically adjusted based on the map's bounds.
         autocomplete.bindTo('bounds', map);
 
         // Set up the listener for the autocomplete widget
@@ -260,7 +200,6 @@ function createDocumentListeners() {
         infoWindow.close();
     });
 
-    // TODO start here to cache first user location request
     const userLocationButton = document.getElementById('locationButton');
     userLocationButton.addEventListener('click', async () => {
         try { // Show loader and fetching text
@@ -282,7 +221,7 @@ function createDocumentListeners() {
 
         document.getElementById('loader').style.display = 'none';
     });
-}
+};
 
 function _getZoomLevel(placeTypes) {
     const zoomLevels = {
@@ -325,10 +264,6 @@ function defineCustomElements() {
 
                 this._card = shadowRoot.querySelector('.card');
                 this._marker = null; // Initially null, set on card creation
-                this._websiteContainer = shadowRoot.getElementById('website-link');
-                this._facebookContainer = shadowRoot.getElementById('fb-link');
-                this._instagramContainer = shadowRoot.getElementById('ig-link');
-                this._emailContainer = shadowRoot.getElementById('emailContainer');
             }
 
             get card() {
@@ -355,7 +290,6 @@ function defineCustomElements() {
                     websiteLink.classList.add('website-icon');
                     websiteLink.innerHTML = siteSVG;
                     this.shadowRoot.appendChild(websiteLink);
-                    this._websiteContainer.appendChild(websiteLink);
 
                     websiteLink.title = 'Visit Website';
                     // Add a click event listener to the website icon
@@ -371,8 +305,6 @@ function defineCustomElements() {
                             window.open(websiteSlot.textContent, '_blank');
                         });
                     }
-
-                    websiteSlot.style.display = 'none'; // Hide the website URL slot content
                 }
 
                 // Create and inject facebook icon and give it a link to the url
@@ -381,13 +313,11 @@ function defineCustomElements() {
                     const facebookLink = document.createElement('a');
                     facebookLink.innerHTML = fbSVG;
                     this.shadowRoot.appendChild(facebookLink);
-                    this._facebookContainer.appendChild(facebookLink);
 
                     facebookLink.title = 'Visit Facebook Page';
                     facebookLink.addEventListener('click', () => {
                         window.open(facebookSlot.textContent, '_blank');
                     });
-                    facebookSlot.style.display = 'none'; // Hide the facebook slot that is generated
                 }
 
                 const igSlot = this.querySelector('[slot="instagram"]');
@@ -395,12 +325,10 @@ function defineCustomElements() {
                     const igLink = document.createElement('a');
                     igLink.innerHTML = instaSVG;
                     this.shadowRoot.appendChild(igLink);
-                    this._instagramContainer.appendChild(igLink);
                     igLink.title = "Visit Instagram Page";
                     igLink.addEventListener('click', () => {
                         window.open(igSlot.textContent, '_blank');
                     })
-                    igSlot.style.display = 'none';
                 }
 
 
@@ -412,8 +340,6 @@ function defineCustomElements() {
                     email.href = "mailto:" + emailSlot.innerHTML;
                     email.setAttribute('data-title', emailSlot.innerHTML);
                     this.shadowRoot.appendChild(email);
-                    this._emailContainer.appendChild(email);
-                    emailSlot.style.display = 'none';
                 }
             }
         }
