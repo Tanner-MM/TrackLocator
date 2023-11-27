@@ -65,10 +65,8 @@ function generateCardsAndPlaceMarkers() {
         //   marker.trackCard = trackEl; // Creates a custom property on the marker to link it its corresponding track card
         markers.push(marker);
 
-
-        // createInfoWindow(marker, index); // Create the infoWindow for each marker.
-        trackContainer.appendChild(trackEl);
         trackEl.marker = marker; // Binds the marker to the track card
+        trackContainer.appendChild(trackEl);
 
         trackEl.addEventListener('click', function () {
             focusOnMarker(marker, trackEl);
@@ -176,8 +174,6 @@ function createDocumentListeners() {
             { types: ['geocode'] }
         );
 
-        // Bind the map's bounds (viewport) property to the autocomplete object,
-        // so the autocomplete's boundary is automatically adjusted based on the map's bounds.
         autocomplete.bindTo('bounds', map);
 
         // Set up the listener for the autocomplete widget
